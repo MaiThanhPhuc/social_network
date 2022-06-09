@@ -7,7 +7,7 @@ const TimeLine = () => {
     <>
       <div className="flex gap-4 justify-center h-full">
         <div className="w-postWidth">
-          <div className="newpost-btn bg-white flex p-3 gap-2 mb-6 rounded">
+          <div className="newpost-btn bg-white flex p-3 gap-2 mb-3 rounded">
             <button className="avatar">
               <div className="w-9 rounded-full">
                 <img

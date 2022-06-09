@@ -12,8 +12,8 @@ const NewPost = () => {
               <h2 className="text-black font-bold text-xl">Create a post</h2>
             </div>
             <div className="user flex items-center">
-              <button class="avatar">
-                <div class="w-8 rounded-full">
+              <button className="avatar">
+                <div className="w-8 rounded-full">
                   <img src="https://api.lorem.space/image/face?hash=92310" />
                 </div>
               </button>
@@ -26,7 +26,7 @@ const NewPost = () => {
               <input
                 type="text"
                 placeholder="What do you think?"
-                class="w-full rounded outline-primaryblue px-3 py-2 text-black/90 bg-grayLight text-sm "
+                className="w-full rounded outline-primaryblue px-3 py-2 text-black/90 bg-grayLight text-sm "
               />
             </div>
             <div className="input-file border border-grayText/20 rounded flex flex-col justify-center items-center gap-3 py-11 bg-grayLight">

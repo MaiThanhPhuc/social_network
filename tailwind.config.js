@@ -28,7 +28,7 @@ module.exports = {
         footerWidth: "330px",
         signinHeight: "450px",
         signupHeight: "530px",
-        pTopNav: "80px",
+        pTopNav: "64px",
         UserAvatar: "150px",
         messageWidth: "700px",
         messHeight: "500px",
