@@ -1,19 +1,22 @@
-import {AiFillStar} from "react-icons/ai";
+import {Routes, Route, Link} from "react-router-dom";
+import {AiFillStar, AiOutlineMessage} from "react-icons/ai";
 import {BiSearch} from "react-icons/bi";
+import {FiPlusSquare} from "react-icons/fi";
+import {IoNotificationsOutline} from "react-icons/io5";
 const Navbar = () => {
   return (
     <>
-      <nav className="flex items-center py-4 pl-4 justify-evenly bg-white fixed w-full top-0 ">
-        <a className="wrapper-right flex items-center cursor-pointer">
-          <AiFillStar className="text-red-700" />
-          <div className="text-lg">Social Network</div>
-        </a>
-        <form className="relative bg-white wrapper-middle outline outline-[#000]/20 outline-1 h-8 w-[450px] flex hover:outline-primaryblue focus-within:outline-primaryblue">
+      <nav className="flex items-center py-4 pl-4 justify-evenly bg-white fixed w-full top-0 z-20 border-b border-black/20 ">
+        <Link to="/" className="wrapper-right flex items-center cursor-pointer">
+          <AiFillStar className="text-red" />
+          <div className="text-black text-lg">Social Network</div>
+        </Link>
+        <form className="relative bg-grayLight wrapper-middle outline outline-[#000]/20 outline-1 h-8 w-[450px] flex hover:outline-primaryblue focus-within:outline-primaryblue rounded ">
           <div className="pl-4 pr-3 flex justify-center items-center ">
             <BiSearch color="#878A8C" size={25} />
           </div>
           <input
-            className="w-full outline-none text-[14px] text-bodytxt "
+            className="pl-2 w-full outline-none text-[14px] bg-grayLight text-bodytxt focus:bg-white "
             type="text"
             placeholder="Search name social"
           ></input>
@@ -44,16 +47,30 @@ const Navbar = () => {
           {/* End suggest */}
         </form>
 
-        <div className="wrapper-left flex ">
-          <div className="flex justify-center items-center outline outline-1 outline-primaryblue h-8 w-24 rounded-[15px] cursor-pointer">
-            <a className="text-primaryblue text-[12px] font-bold">Log In</a>
+        <div className="wrapper-left flex justify-between w-[230px] items-center">
+          <div className="  flex items-end justify-end">
+            <Link
+              to="/newpost"
+              className="btn btn-sm btn-primary text-white gap-1 text-xs"
+            >
+              <FiPlusSquare size={18} /> Create
+            </Link>
           </div>
-          <div className="ml-3 flex justify-center items-center h-8 w-24 rounded-[15px] bg-primaryblue cursor-pointer">
-            <a className="text-white text-[12px] font-bold">Sign Up</a>
-          </div>
+          <button class="indicator ">
+            <span class=" right-2 top-[5px] indicator-item badge badge-accent badge-xs"></span>
+            <IoNotificationsOutline size={28} />
+          </button>
+          <button class="indicator ">
+            <span class=" right-2 top-[5px] indicator-item badge badge-accent badge-xs"></span>
+            <AiOutlineMessage size={28} />
+          </button>
+          <Link to="/user" class="avatar">
+            <div class="w-8 rounded-full">
+              <img src="https://api.lorem.space/image/face?hash=92310" />
+            </div>
+          </Link>
         </div>
       </nav>
-      <div></div>
     </>
   );
 };

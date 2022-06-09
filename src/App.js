@@ -1,8 +1,10 @@
 import "./App.css";
-import Navbar from "./components/navbar/Navbar";
-import Home from "./pages/Homepage/Home";
+import {BrowserRouter as Router} from "react-router-dom";
+import MyRoutes from "./Routes/index";
+import history from "./Services/history";
+
 function App() {
-  return <Home></Home>;
+  return <MyRoutes />;
 }
 
 export default App;
