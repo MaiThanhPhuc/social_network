@@ -30,7 +30,6 @@ const TimeLine = () => {
             </Link>
           </div>
           <Post />
-          <Post />
         </div>
         <div className="w-footerWidth ">
           <Footer />

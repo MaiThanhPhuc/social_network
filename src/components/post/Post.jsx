@@ -1,128 +1,109 @@
 import {useState} from "react";
 import {AiOutlineHeart, AiFillHeart} from "react-icons/ai";
-import {
-  FaRegComment,
-  FaRegShareSquare,
-  FaRegFlag,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
-const Post = () => {
+import {FaRegComment, FaRegShareSquare, FaRegFlag} from "react-icons/fa";
+import Carousel from "./Carousel";
+import CommentBox from "./CommentBox";
+import CommentLoad from "./CommentLoad";
+import Report from "./Report";
+import Share from "./Share";
+
+const Post = (postID, userImage, userName, time, postImages, postDes) => {
   const [like, setLike] = useState(110);
   const [isLike, setIsLike] = useState(false);
+  const [showCmt, setShowCmt] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  // ////////////////////
+  userName = "as";
+  time = 1;
+  postDes = "123";
+  userImage = "https://api.lorem.space/image/face?hash=92310";
+  // //////////////////
+
+  const handleLike = () => {
+    if (isLike) {
+      setIsLike(false);
+      if (like !== 0) {
+        setLike(like - 1);
+      }
+    } else {
+      setIsLike(true);
+      setLike(like + 1);
+    }
+  };
+
   return (
     <>
-      <div className="bg-white flex flex-col py-2 rounded gap-[4px] mb-6">
+      <div className="bg-white flex flex-col py-2 rounded gap-[4px] mb-6 ">
         <div className="top-post mx-4">
           <div className="heading-avatar flex items-center">
             <button className="avatar">
               <div className="w-9 rounded-full">
-                <img src="https://api.lorem.space/image/face?hash=92310" />
+                <img src={userImage} alt={userName} />
               </div>
             </button>
             <div className="box-left flex flex-col ml-2 ">
-              <a className="user-name text-black font-semibold ">John Wick</a>
+              <a
+                href="/"
+                className="user-name text-black font-semibold cursor-pointer"
+              >
+                {userName}
+              </a>
               <span className="text-grayText text-xs font-semibold">
-                30m ago
+                {time} minutes ago
               </span>
             </div>
           </div>
           <div className="tile-post ">
-            <span className="text-black text-sm">
-              This was one of the most epic journeys, that i've got myself
-              involved in. Maybe one of the most memorizable in my entire life!
-            </span>
+            <span className="text-black text-sm">{postDes}</span>
           </div>
         </div>
-        <div className="image-post flex justify-center items-center gap-1 bg-black ">
-          <button className="pre-image bg-white/50 w-7 h-7 rounded-full flex justify-center items-center hover:cursor-pointer ">
-            <FaChevronLeft />
-          </button>
-          <img
-            src="https://images.unsplash.com/photo-1605791141812-35237abf684e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80"
-            alt="image"
-            className="max-w-[448px] max-h-[560px] rounded"
-          />
-          <button className="next-image bg-white/50 w-7 h-7 rounded-full flex justify-center items-center hover:cursor-pointer  ">
-            <FaChevronRight />
-          </button>
-        </div>
-        <div className="pagnation-post flex gap-1 justify-center">
-          <div className="rounded-full w-[8px] h-[8px] bg-primaryblue"></div>
-          <div className="rounded-full w-[8px] h-[8px] bg-grayText"></div>
-          <div className="rounded-full w-[8px] h-[8px] bg-grayText"></div>
-          <div className="rounded-full w-[8px] h-[8px] bg-grayText"></div>
+        <div className="post-image flex justify-center ">
+          <Carousel key={postID} />
         </div>
         <div className="bottom-post mx-4">
           <div className="react-post flex justify-between text-2xl ">
             <div className="left flex gap-2 w-fit ">
-              <button
-                onClick={() => {
-                  if (isLike) {
-                    setIsLike(false);
-                    if (like != 0) {
-                      setLike(like - 1);
-                    }
-                  } else {
-                    setIsLike(true);
-                    setLike(like + 1);
-                  }
-                }}
-                className="like-post"
-              >
+              <button onClick={handleLike} className="like-post">
                 <AiOutlineHeart className={isLike && "hidden"} />
                 <AiFillHeart
                   style={{color: "red"}}
                   className={!isLike && "hidden"}
                 />
               </button>
-              <button className="like-post">
-                <FaRegComment />
+              <button
+                className="cmt-post"
+                onClick={() => {
+                  setShowCmt(true);
+                }}
+              >
+                <FaRegComment className="hover:text-black/50" />
               </button>
-              <button className="like-post">
-                <FaRegShareSquare />
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="share-post"
+              >
+                <FaRegShareSquare className="hover:text-black/50" />
               </button>
+              {showShareModal ? (
+                <Share setShowShareModal={setShowShareModal} />
+              ) : null}
             </div>
             <div className="right ">
-              <button className="like-post">
-                <FaRegFlag />
+              <button
+                onClick={() => setShowReport(true)}
+                className="report-post"
+              >
+                <FaRegFlag className="hover:text-black/50" />
               </button>
+              {showReport ? <Report setShowReport={setShowReport} /> : null}
             </div>
           </div>
           <div className="count-react">
             <span className="font-bold text-[13px]"> {like} Likes</span>
           </div>
-          <div className="cmt-post flex gap-2 ">
-            <button className="avatar">
-              <div className="w-9 rounded-full">
-                <img src="https://api.lorem.space/image/face?hash=92310" />
-              </div>
-            </button>
-            <div className="main-cmt-post">
-              <div className="cmt-box bg-grayLight rounded px-2 py-1">
-                <div className="heading-cmt">
-                  <span className="text-[13px] font-semibold">Nguoi La</span>
-                </div>
-                <div className="content-cmt text-[13px] ">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Totam numquam porro, odit assumenda provident ratione
-                    excepturi autem nam aperiam perferendis sequi officiis
-                    voluptates, iure a eaque nesciunt voluptatum ut rem.
-                  </p>
-                </div>
-              </div>
-              <div className="info-cmt-post text-xs ">
-                <button className="font-semibold mx-2 hover:underline">
-                  Like
-                </button>
-                <button className="font-semibold mr-2 hover:underline">
-                  Reply
-                </button>
-                <span>1m</span>
-              </div>
-            </div>
-          </div>
+          <CommentLoad />
+          {showCmt ? <CommentBox /> : null}
         </div>
       </div>
     </>

@@ -14,6 +14,7 @@ module.exports = {
       grayText: "#84878B",
       inputColor: "#E7ECF3",
       red: "#FF0000",
+      green: "#6ECB63",
     },
     extend: {
       spacing: {
@@ -32,6 +33,8 @@ module.exports = {
         UserAvatar: "150px",
         messageWidth: "700px",
         messHeight: "500px",
+        reportWidth: "400px",
+        shareWidth: "540px",
       },
     },
   },
