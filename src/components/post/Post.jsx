@@ -58,7 +58,7 @@ const Post = (postID, userImage, userName, time, postImages, postDes) => {
             <span className="text-black text-sm">{postDes}</span>
           </div>
         </div>
-        <div className="post-image flex justify-center ">
+        <div className="post-image flex justify-center rounded ">
           <Carousel key={postID} />
         </div>
         <div className="bottom-post mx-4">

@@ -14,7 +14,7 @@ const Carousel = ({key}) => {
   ];
   return (
     <>
-      <div className="w-[470px] h-[560px]">
+      <div className="w-imagePostWidht h-imagePostHeight rounded">
         <Swiper
           slidesPerView={1}
           spaceBetween={30}
@@ -29,8 +29,8 @@ const Carousel = ({key}) => {
           className="mySwiper"
         >
           {postImages.map((img) => (
-            <SwiperSlide>
-              <img src={img} alt="anh" />
+            <SwiperSlide className="rounded bg-black">
+              <img src={img} alt="anh" className="rounded" />
             </SwiperSlide>
           ))}
         </Swiper>
