@@ -1,10 +1,19 @@
 import "./App.css";
-import {BrowserRouter as Router} from "react-router-dom";
 import MyRoutes from "./Routes/index";
-import history from "./Services/history";
-
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
-  return <MyRoutes />;
+  return (
+    <>
+      <MyRoutes />
+      <ToastContainer
+        position="bottom-center"
+        newestOnTop={true}
+        limit={3}
+        style={{width: "400px", fontSize: "12px"}}
+      />
+    </>
+  );
 }
 
 export default App;

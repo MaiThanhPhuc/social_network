@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import {Navigation} from "swiper";
 import {BsTrash} from "react-icons/bs";
 
-const ImagesUpload = ({imageURLs, setImages}) => {
+const ImagesUpload = ({imageURL, setImages}) => {
   return (
     <>
       <Swiper
@@ -14,17 +14,15 @@ const ImagesUpload = ({imageURLs, setImages}) => {
         modules={[Navigation]}
         className="mySwiper rounded"
       >
-        {imageURLs.map((img) => (
-          <SwiperSlide>
-            <div
-              onClick={() => setImages(imageURLs.filter((tmp) => tmp !== img))}
-              className=" cursor-pointer p-2 absolute top-0 right-0 bg-red/100 rounded"
-            >
-              <BsTrash />
-            </div>
-            <img src={img} alt="anh" className="rounded" />
-          </SwiperSlide>
-        ))}
+        <SwiperSlide>
+          <div
+            onClick={() => setImages("")}
+            className=" cursor-pointer p-2 absolute top-0 right-0 bg-red/100 rounded"
+          >
+            <BsTrash />
+          </div>
+          <img src={imageURL} alt="anh" className="rounded" />
+        </SwiperSlide>
       </Swiper>
     </>
   );

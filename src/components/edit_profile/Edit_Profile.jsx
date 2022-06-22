@@ -1,94 +1,242 @@
+import {useState, useRef} from "react";
+import {useFormik} from "formik";
+import userService from "../../Services/user.service";
+import avatarDefault from "../../Resource/Image/avatar.png";
+import {toast} from "react-toastify";
+import TextareaAutosize from "react-textarea-autosize";
+import {useOutletContext} from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 const Edit_Profile = () => {
+  const userData = useOutletContext();
+
+  const [avatar, setAvatar] = useState(userData.imageUrl);
+  const [file, setFile] = useState();
+  const [showAvatarModal, setshowAvatarModal] = useState(false);
+  const toastId = useRef(null);
+  const handleChangeAvatar = () => {
+    notify();
+    userService
+      .addImgUser(userData.id, file)
+      .then((res) => {
+        console.log(res);
+        updateNoti();
+      })
+      .catch((err) => console.log(err));
+  };
+  const notify = () =>
+    (toastId.current = toast("Upload in progress, please wait...", {
+      autoClose: false,
+      themes: "dark",
+    }));
+  const updateNoti = () =>
+    toast.update(toastId.current, {
+      render: "Post Success ✔",
+      type: toast.TYPE.SUCCESS,
+      autoClose: 4000,
+      themes: "dark",
+    });
+  const handlePreviewImages = (e) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+      setAvatar(URL.createObjectURL(e.target.files[0]));
+      console.log(avatar);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      fname: userData.firstName,
+      lname: userData.lastName,
+      birthday: userData.birthDay,
+      address: userData.address,
+      bio: userData.bio,
+    },
+    onSubmit: (values) => {
+      userService
+        .updateUser(
+          userData.id,
+          values.fname,
+          values.lname,
+          values.bio,
+          values.address,
+          values.birthday
+        )
+        .then((res) => {
+          if (res.status == 200) {
+            toast.success("Update Infomation success!", {
+              position: "bottom-center",
+              autoClose: 3000,
+              theme: "dark",
+            });
+
+            localStorage.setItem("userName", values.lname + " " + values.fname);
+          }
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+    },
+  });
+
   return (
     <>
-      <div className="bg-white rounded ">
-        <div className="flex flex-col gap-6 py-8">
-          <div className="avatar-change flex items-center ">
-            <button class="avatar w-1/4 flex justify-end">
-              <div class="w-9 rounded-full">
-                <img src="https://api.lorem.space/image/face?hash=92310" />
+      <form>
+        <div className="bg-white rounded h-[600px] ">
+          <div className="flex flex-col gap-6 py-8">
+            <div className="avatar-change flex items-center ">
+              <div className="avatar w-1/4 flex justify-end">
+                <div className="w-9 rounded-full">
+                  <img
+                    src={
+                      userData.imageUrl !== null
+                        ? userData.imageUrl
+                        : avatarDefault
+                    }
+                    alt="avatar"
+                  />
+                </div>
               </div>
-            </button>
-            <div className="user-name-change-avatar ml-8">
-              <h2 className="font-semibold text-lg leading-[20px]">
-                John Wick
-              </h2>
-              <button className="font-semibold text-sm leading-3 text-primaryblue hover:cursor-pointer ">
-                Change Profile Photo
+              <div className="user-name-change-avatar ml-8">
+                <h2 className="font-semibold text-lg leading-[20px] mb-1">
+                  {userData.lastName + " " + userData.firstName}
+                </h2>
+                <p
+                  onClick={() => setshowAvatarModal(true)}
+                  className="font-semibold text-sm leading-3 text-primaryblue hover:cursor-pointer "
+                >
+                  Change Profile Photo
+                </p>
+              </div>
+            </div>
+
+            <div className="items-edit-user-name flex w-full ">
+              <label htmlFor="fname" className="font-semibold text-right w-1/4">
+                First Name
+              </label>
+              <input
+                type="text"
+                name="fname"
+                value={formik.values.fname}
+                onChange={formik.handleChange}
+                className="pl-2 py-1 border border-black/20 rounded w-1/6 ml-8 text-sm"
+                id="fname"
+              />
+              <label htmlFor="lname" className="font-semibold text-right ml-5">
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="lname"
+                value={formik.values.lname}
+                onChange={formik.handleChange}
+                className="pl-2 py-1 border border-black/20 rounded w-1/6 ml-4 text-sm"
+                id="lname"
+              />
+            </div>
+            <div className="items-edit-user-from flex ">
+              <label
+                htmlFor="address"
+                className="font-semibold text-right w-1/4"
+              >
+                Address
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={formik.values.address}
+                onChange={formik.handleChange}
+                className="pl-2 py-1 border text-sm border-black/20 rounded w-2/4 ml-8"
+                id="address"
+              />
+            </div>
+            <div className="items-edit-user-from flex ">
+              <label
+                htmlFor="birthday"
+                className="font-semibold text-right w-1/4"
+              >
+                Birthday
+              </label>
+              <input
+                type="date"
+                name="birthday"
+                value={formik.values.birthday}
+                onChange={formik.handleChange}
+                className="pl-2 py-1 text-sm border border-black/20 rounded w-2/4 ml-8"
+                id="birthday"
+              />
+            </div>
+            <div className="items-edit-user-bio flex ">
+              <label htmlFor="bio" className="font-semibold text-right w-1/4">
+                Bio
+              </label>
+
+              <TextareaAutosize
+                maxLength={100}
+                id="bio"
+                name="bio"
+                maxRows={3}
+                value={formik.values.bio}
+                onChange={formik.handleChange}
+                className="w-2/4 border border-black/20 rounded ml-8 resize-none text-sm py-2 pl-2"
+              />
+            </div>
+
+            <div className="btn-edit-user flex">
+              <div className="w-1/4 mr-8"></div>
+              <button
+                type="submit"
+                onClick={formik.handleSubmit}
+                className="px-6 btn text-right btn-sm btn-primary normal-case text-white"
+              >
+                Save Change
               </button>
             </div>
           </div>
-          <div className="items-edit-user-name flex ">
-            <label
-              htmlFor="username"
-              className="font-semibold text-right w-1/4"
-            >
-              User Name
-            </label>
-            <input
-              type="text"
-              className="pl-2 py-1 border border-black/20 rounded w-2/4 ml-8"
-              name="username"
-            />
-          </div>
-          <div className="items-edit-user-from flex ">
-            <label htmlFor="from" className="font-semibold text-right w-1/4">
-              Hometown
-            </label>
-            <input
-              type="text"
-              className="pl-2 py-1 border border-black/20 rounded w-2/4 ml-8"
-              name="from"
-            />
-          </div>
-          <div className="items-edit-user-bio flex ">
-            <label htmlFor="bio" className="font-semibold text-right w-1/4">
-              Bio
-            </label>
-            <textarea
-              maxlength="100"
-              type="text"
-              className="pl-2 py-1 border border-black/20 rounded w-2/4 ml-8 resize-none"
-              name="bio"
-            ></textarea>
-          </div>
-          <div className="items-edit-user-hobby flex ">
-            <label htmlFor="hobby" className="font-semibold text-right w-1/4 ">
-              Hobby
-            </label>
-            <textarea
-              maxlength="100"
-              type="text"
-              className="pl-2 py-1 border border-black/20 rounded w-2/4 ml-8 resize-none"
-              name="hobby"
-            ></textarea>
-          </div>
-          <div className="items-edit-user-name flex ">
-            <label
-              htmlFor="username"
-              className="font-semibold text-right w-1/4"
-            >
-              Age
-            </label>
-            <input
-              type="text"
-              className="pl-2 py-1 border border-black/20 rounded w-2/4 ml-8"
-              name="username"
-              onKeyPress={(event) => {
-                if (!/[0-9]/.test(event.key)) {
-                  event.preventDefault();
-                }
-              }}
-            />
-          </div>
-          <div className="btn-edit-user flex">
-            <div className="w-1/4 mr-8"></div>
-            <button className="px-6 btn text-right btn-sm btn-primary normal-case text-white">
-              Save Change
-            </button>
+        </div>
+      </form>
+
+      {showAvatarModal ? (
+        <div className="modal visible opacity-100 pointer-events-auto">
+          <div className="modal-box w-avatarPreviewWidth relative max-w-7xl py-4 px-6">
+            <div className="flex flex-col justify-center items-center gap-4">
+              <h3 className="text-xl font-semibold text-black">
+                Update profile picture
+              </h3>
+              <div className="border-b border-black/20 w-full "></div>
+              <div className="rounded-full my-4">
+                <label htmlFor="media">
+                  <img
+                    src={avatar}
+                    alt="img"
+                    className="rounded-full w-[300px] h-[300px] cursor-pointer object-cover"
+                  />
+                  <input
+                    type="file"
+                    id="media"
+                    name="media"
+                    accept="image/*"
+                    className="py-2"
+                    onChange={handlePreviewImages}
+                  />
+                </label>
+              </div>
+              <div className="flex w-full justify-end">
+                <button
+                  onClick={() => setshowAvatarModal(false)}
+                  className="px-8 text-base text-black rounded hover:bg-black/10 py-1 border-black border mr-4"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={handleChangeAvatar}
+                  className="px-8 bg-primaryblue text-base text-white rounded py-1 hover:bg-primaryblue/90"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </>
   );
 };

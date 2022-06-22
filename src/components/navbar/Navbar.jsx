@@ -1,13 +1,27 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, memo} from "react";
 import {Routes, Route, Link} from "react-router-dom";
 import {AiFillStar, AiOutlineMessage} from "react-icons/ai";
 import {BiSearch} from "react-icons/bi";
 import {FiPlusSquare} from "react-icons/fi";
 import {IoNotificationsOutline} from "react-icons/io5";
 import logo from "../../Resource/Image/logo.png";
-const Navbar = () => {
+import userService from "../../Services/user.service";
+import authService from "../../Services/auth.service";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const Navbar = ({Avatar}) => {
   const [noti, setNoti] = useState(false);
   const [mess, setMess] = useState(true);
+
+  const handleSignOut = () => {
+    toast.success("Sign out success!", {
+      position: "bottom-center",
+      autoClose: 3000,
+      theme: "dark",
+    });
+    authService.logout();
+    window.location.href = "/login";
+  };
 
   return (
     <>
@@ -39,7 +53,7 @@ const Navbar = () => {
                   </div>
                   <div className="w-full flex items-center">
                     <div className="">
-                      <span className="font-semibold text-base">test name</span>
+                      <span className="font-semibold text-base"></span>
                       <div className="text-xs text-bodytxt pb-1">
                         test@gmail.com
                       </div>
@@ -69,8 +83,9 @@ const Navbar = () => {
           >
             <span
               className={
-                noti &&
-                "right-2 top-[5px] indicator-item badge badge-accent badge-xs"
+                noti
+                  ? "right-2 top-[5px] indicator-item badge badge-accent badge-xs"
+                  : null
               }
             ></span>
             <IoNotificationsOutline size={25} />
@@ -89,15 +104,49 @@ const Navbar = () => {
             ></span>
             <AiOutlineMessage size={25} />
           </button>
-          <Link to="/user" className="avatar">
-            <div className="w-8 rounded-full">
-              <img src="https://api.lorem.space/image/face?hash=92310" />
-            </div>
-          </Link>
+
+          <div className="dropdown dropdown-end mt-1">
+            <label tabIndex="0">
+              <button className="avatar">
+                <div className="w-8 rounded-full">
+                  <img src={Avatar} />
+                </div>
+              </button>
+            </label>
+            <ul
+              tabIndex="0"
+              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 text-base"
+            >
+              <li>
+                <Link
+                  to="/user"
+                  className=" text-sm active:bg-primaryblue/50 p-2 text-black"
+                >
+                  My wall
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/accounts"
+                  className=" text-sm active:bg-primaryblue/50 p-2 text-black"
+                >
+                  Edit profile
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={handleSignOut}
+                  className=" text-sm active:bg-primaryblue/50 p-2 text-black"
+                >
+                  Sign out
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </>
   );
 };
 
-export default Navbar;
+export default memo(Navbar);

@@ -1,24 +1,27 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {AiOutlineHeart, AiFillHeart} from "react-icons/ai";
 import {FaRegComment, FaRegShareSquare, FaRegFlag} from "react-icons/fa";
+import userService from "../../Services/user.service";
 import Carousel from "./Carousel";
 import CommentBox from "./CommentBox";
 import CommentLoad from "./CommentLoad";
 import Report from "./Report";
 import Share from "./Share";
+import avatarDefault from "../../Resource/Image/avatar.png";
 
-const Post = (postID, userImage, userName, time, postImages, postDes) => {
-  const [like, setLike] = useState(110);
-  const [isLike, setIsLike] = useState(false);
+const Post = ({postData}) => {
+  const [like, setLike] = useState(postData.countLiked);
+  const [isLike, setIsLike] = useState(postData.liked);
   const [showCmt, setShowCmt] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  // ////////////////////
-  userName = "as";
-  time = 1;
-  postDes = "123";
-  userImage = "https://api.lorem.space/image/face?hash=92310";
-  // //////////////////
+  const [sizeCmt, setSizeCmt] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [cmts, setCmts] = useState([]);
+  const [load, setLoad] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const Id = user.userId;
 
   const handleLike = () => {
     if (isLike) {
@@ -30,7 +33,35 @@ const Post = (postID, userImage, userName, time, postImages, postDes) => {
       setIsLike(true);
       setLike(like + 1);
     }
+    setLikeApi();
   };
+
+  const fetchDataComment = async () => {
+    await userService
+      .getComment(postData.id, sizeCmt)
+      .then((res) => {
+        setCmts(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    if (cmts.length !== 0) {
+      setLoad(true);
+    }
+  }, [cmts]);
+
+  const setLikeApi = async () => {
+    await userService
+      .likePost(Id, postData.id)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    fetchDataComment();
+  }, []);
 
   return (
     <>
@@ -39,7 +70,14 @@ const Post = (postID, userImage, userName, time, postImages, postDes) => {
           <div className="heading-avatar flex items-center">
             <button className="avatar">
               <div className="w-9 rounded-full">
-                <img src={userImage} alt={userName} />
+                <img
+                  src={
+                    postData.userCreate.imageUrl !== null
+                      ? postData.userCreate.imageUrl
+                      : avatarDefault
+                  }
+                  alt={postData.userCreate.firstName}
+                />
               </div>
             </button>
             <div className="box-left flex flex-col ml-2 ">
@@ -47,22 +85,22 @@ const Post = (postID, userImage, userName, time, postImages, postDes) => {
                 href="/"
                 className="user-name text-black font-semibold cursor-pointer"
               >
-                {userName}
+                {postData.userCreate.firstName}
               </a>
               <span className="text-grayText text-xs font-semibold">
-                {time} minutes ago
+                {postData.createTime} minutes ago
               </span>
             </div>
           </div>
-          <div className="tile-post ">
-            <span className="text-black text-sm">{postDes}</span>
+          <div className="tile-post mt-4 ">
+            <span className="text-black text-base">{postData.content}</span>
           </div>
         </div>
         <div className="post-image flex justify-center rounded ">
-          <Carousel key={postID} />
+          <Carousel imageUrl={postData.urlImage} />
         </div>
-        <div className="bottom-post mx-4">
-          <div className="react-post flex justify-between text-2xl ">
+        <div className="bottom-post mx-4 ">
+          <div className="react-post flex justify-between text-2xl mt-2 ">
             <div className="left flex gap-2 w-fit ">
               <button onClick={handleLike} className="like-post">
                 <AiOutlineHeart className={isLike && "hidden"} />
@@ -96,14 +134,35 @@ const Post = (postID, userImage, userName, time, postImages, postDes) => {
               >
                 <FaRegFlag className="hover:text-black/50" />
               </button>
-              {showReport ? <Report setShowReport={setShowReport} /> : null}
+              {showReport ? (
+                <Report postID={postData.id} setShowReport={setShowReport} />
+              ) : null}
             </div>
           </div>
-          <div className="count-react">
+
+          <div className="count-react mb-2">
             <span className="font-bold text-[13px]"> {like} Likes</span>
           </div>
-          <CommentLoad />
-          {showCmt ? <CommentBox /> : null}
+
+          {load
+            ? cmts.map((cmt, index) => (
+                <CommentLoad key={index} cmtData={cmt} />
+              ))
+            : null}
+          {load ? (
+            <div className="count-react mb-2">
+              <button
+                onClick={() => {
+                  setSizeCmt(sizeCmt + 4);
+                  fetchDataComment();
+                }}
+                className=" font-semibold text-sm hover:cursor-pointer hover:underline text-primaryblue"
+              >
+                View more comment
+              </button>
+            </div>
+          ) : null}
+          {showCmt ? <CommentBox userID={Id} postID={postData.id} /> : null}
         </div>
       </div>
     </>

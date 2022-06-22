@@ -1,19 +1,23 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useRef} from "react";
 import {FaPhotoVideo} from "react-icons/fa";
 import Footer from "../footer/Footer";
 import Picker from "emoji-picker-react";
 import TextareaAutosize from "react-textarea-autosize";
 import ImagesUpload from "./ImagesUpload";
 import {BsEmojiSmile} from "react-icons/bs";
+import userService from "../../Services/user.service";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// Import React FilePond
-const NewPost = ({userName, avatar}) => {
-  userName = "test";
-  avatar = "https://api.lorem.space/image/face?hash=92310";
+const NewPostForm = ({Avatar}) => {
   const [content, setContent] = useState("");
-  const [images, setImages] = useState([]);
-
+  const [images, setImages] = useState("");
+  const [file, setFile] = useState();
   const [showPicker, setShowPicker] = useState(false);
+  const toastId = useRef(null);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const Id = user.userId;
   const onEmojiClick = (event, emojiObject) => {
     setContent((prevInput) => prevInput + emojiObject.emoji);
     setShowPicker(false);
@@ -21,19 +25,63 @@ const NewPost = ({userName, avatar}) => {
 
   const handlePreviewImages = (e) => {
     if (e.target.files) {
-      const imagesArray = Array.from(e.target.files).map((img) =>
-        URL.createObjectURL(img)
-      );
-      setImages((img) => img.concat(imagesArray));
-      Array.from(e.target.files).map((img) => URL.revokeObjectURL(img));
+      setFile(e.target.files[0]);
+      const imagesArray = URL.createObjectURL(e.target.files[0]);
+      setImages(imagesArray);
+      URL.revokeObjectURL(e.target.files[0]);
     }
+  };
+
+  const newPostApi = async () => {
+    await userService
+      .newPost(content, Id)
+      .then((res) => {
+        notify();
+        addImagePost(res.data.data.id);
+      })
+      .catch((err) => console.log(err));
+  };
+  const notify = () =>
+    (toastId.current = toast("Upload in progress, please wait...", {
+      autoClose: false,
+      themes: "dark",
+    }));
+  const updateNoti = () =>
+    toast.update(toastId.current, {
+      render: "Post Success ✔",
+      type: toast.TYPE.SUCCESS,
+      autoClose: 4000,
+      themes: "dark",
+    });
+  const addImagePost = async (ID) => {
+    var formdata = new FormData();
+    formdata.append("img", file);
+
+    var requestOptions = {
+      method: "PUT",
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch(`http://localhost:8080/api/post/upImg?postId=${ID}`, requestOptions)
+      .then((response) => {
+        if (response.status === 200) {
+          updateNoti();
+        }
+      })
+      .catch((error) => console.log("error", error));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(images);
-    console.log(content);
+    if (content !== "" || images !== "") {
+      newPostApi();
+    }
+    setContent("");
+    setImages("");
+    setFile("");
   };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -48,12 +96,12 @@ const NewPost = ({userName, avatar}) => {
               <div className="user flex items-center">
                 <button className="avatar">
                   <div className="w-8 rounded-full">
-                    <img src={avatar} />
+                    <img src={Avatar} alt="avatar" />
                   </div>
                 </button>
-                <a className="user-name text-black font-semibold ml-2">
-                  {userName}
-                </a>
+                <div className="user-name text-black font-semibold ml-2">
+                  {localStorage.getItem("userName")}
+                </div>
               </div>
               <div className="input-title flex rounded bg-grayLight">
                 <TextareaAutosize
@@ -84,20 +132,19 @@ const NewPost = ({userName, avatar}) => {
                 </div>
               </div>
               <div className="input-file rounded flex flex-col justify-center items-center gap-3 bg-grayLight h-[500px]">
-                {images[0] == null ? (
+                {images === "" ? (
                   <div className=" flex flex-col justify-center items-center gap-3">
                     <div className="icons text-black">
                       <FaPhotoVideo size={62} />
                     </div>
                     <span className="text-black text-lg ">
-                      Drag photos and videos here
+                      Insert photo here
                     </span>
                     <div className="button-choosefile ">
                       <label className="btn btn-primary text-white text-sm normal-case btn-sm rounded">
                         Select from your computer
                         <input
                           type="file"
-                          multiple
                           name="media"
                           accept="image/*"
                           className="hidden"
@@ -107,7 +154,7 @@ const NewPost = ({userName, avatar}) => {
                     </div>
                   </div>
                 ) : (
-                  <ImagesUpload imageURLs={images} setImages={setImages} />
+                  <ImagesUpload imageURL={images} setImages={setImages} />
                 )}
               </div>
 
@@ -130,4 +177,4 @@ const NewPost = ({userName, avatar}) => {
   );
 };
 
-export default NewPost;
+export default NewPostForm;

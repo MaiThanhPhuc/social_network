@@ -1,23 +1,22 @@
 import {useEffect, useState} from "react";
 import Post from "../../components/post/Post";
-import ProfileUser from "../../components/user/ProfileUser";
 import Navbar from "../../components/navbar/Navbar";
 import userService from "../../Services/user.service";
 import InfiniteScroll from "react-infinite-scroll-component";
+import ProfileGuest from "../../components/guest/ProfileGuest";
 import avatarDefault from "../../Resource/Image/avatar.png";
 
-const Profile = () => {
+const Guest = () => {
   const [posts, setPosts] = useState([]);
+  const [avatar, setAvatar] = useState();
   const [page, setPage] = useState(0);
   const [countPost, setCountPost] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [avatar, setAvatar] = useState();
   const [user, setUser] = useState(null);
   const temp = JSON.parse(localStorage.getItem("user"));
   const Id = temp.userId;
 
   useEffect(() => {
-    fetchPostApi();
     fetchUserApi();
   }, []);
 
@@ -69,7 +68,7 @@ const Profile = () => {
                 hasMore={hasMore}
                 loader={<h4>Loading...</h4>}
                 endMessage={
-                  <p style={{textAlign: "center ", marginBottom: "16px"}}>
+                  <p style={{textAlign: "center"}}>
                     <b>Yay! You have seen it all</b>
                   </p>
                 }
@@ -80,7 +79,7 @@ const Profile = () => {
               </InfiniteScroll>
             </div>
             <div className="w-footerWidth">
-              {user !== null ? <ProfileUser userData={user} /> : null}
+              {user !== null ? <ProfileGuest userData={user} /> : null}
             </div>
           </div>
         </div>
@@ -89,4 +88,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Guest;

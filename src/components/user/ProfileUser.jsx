@@ -1,47 +1,58 @@
 import {AiOutlineEdit} from "react-icons/ai";
 import {Link} from "react-router-dom";
-const Profile_User = () => {
+import avatarDefault from "../../Resource/Image/avatar.png";
+
+const ProfileUser = ({userData}) => {
   return (
     <>
       <div className="bg-white mb-4 flex flex-col items-center rounded py-8 gap-6">
         <div className="heading-profile flex flex-col justify-center items-center gap-3 ">
           <div className="avatar ">
-            <div class="w-UserAvatar rounded-full hover:cursor-pointer">
+            <div className="w-UserAvatar rounded-full hover:cursor-pointer">
               <img
-                src="https://api.lorem.space/image/face?hash=92310 "
+                src={
+                  userData.imageUrl !== null ? userData.imageUrl : avatarDefault
+                }
                 className="hover:bg-white"
               />
             </div>
           </div>
           <div className="name-user">
-            <h1 className="font-bold text-black text-xl">Jack Sparrow</h1>
+            <h1 className="font-bold text-black text-xl">
+              {localStorage.getItem("userName")}
+            </h1>
           </div>
         </div>
         <div className="border border-b w-5/6 border-grayLight"></div>
         <div className="info-user flex flex-col justify-center items-center w-5/6 gap-2">
           <div className="from-box flex justify-between w-full">
-            <h3 className="label-info font-semibold text-sm">Hometown</h3>
+            <h3 className="label-info font-semibold text-sm">Email</h3>
             <span className="content-info text-grayText font-medium text-sm">
-              Viet Nam
+              {userData.email}
+            </span>
+          </div>
+          <div className="from-box flex justify-between w-full">
+            <h3 className="label-info font-semibold text-sm">Address</h3>
+            <span className="content-info text-grayText font-medium text-sm">
+              {userData.address}
+            </span>
+          </div>
+          <div className="bio-box flex justify-between w-full">
+            <h3 className="label-info font-semibold text-sm">Gender</h3>
+            <span className="content-info text-grayText font-medium text-sm w-2/3 text-right">
+              {userData.gender == 0 ? "Male" : "Female"}
+            </span>
+          </div>
+          <div className="bio-box flex justify-between w-full">
+            <h3 className="label-info font-semibold text-sm">Date of birth</h3>
+            <span className="content-info text-grayText font-medium text-sm w-2/3 text-right">
+              {userData.birthDay}
             </span>
           </div>
           <div className="bio-box flex justify-between w-full">
             <h3 className="label-info font-semibold text-sm">Bio</h3>
             <span className="content-info text-grayText font-medium text-sm w-2/3 text-right">
-              Nice men Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Necessitatibus placeat neque iure dignissimos enim
-            </span>
-          </div>
-          <div className="age-box flex justify-between w-full ">
-            <h3 className="label-info font-semibold text-sm">Age</h3>
-            <span className="content-info text-grayText font-medium text-sm w-2/3 text-right">
-              23
-            </span>
-          </div>
-          <div className="hobby-box flex justify-between w-full">
-            <h3 className="label-info font-semibold text-sm">Hobby</h3>
-            <span className="content-info text-grayText font-medium text-sm w-2/3 text-right">
-              music
+              {userData.bio}
             </span>
           </div>
         </div>
@@ -57,4 +68,4 @@ const Profile_User = () => {
   );
 };
 
-export default Profile_User;
+export default ProfileUser;

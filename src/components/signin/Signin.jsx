@@ -1,15 +1,16 @@
-import {useRef, useState, useEffect, useContext} from "react";
-import axios from "axios";
+import {useState} from "react";
 import {useFormik} from "formik";
+import {Redirect, useNavigate} from "react-router-dom";
 import * as Yup from "yup";
 import {AiOutlineGoogle} from "react-icons/ai";
 import {FaFacebookF} from "react-icons/fa";
 import Recovery from "../recovery/Recovery";
 import Signup from "../signup/Signup";
-import Storage from "../../Services/Storage ";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Signin = () => {
-  const user = Storage.GetItem("user");
-
+  let navigate = useNavigate();
+  const [succes, setSuccess] = useState(true);
   const formik = useFormik({
     initialValues: {
       emailSi: "",
@@ -30,19 +31,36 @@ const Signin = () => {
         ),
     }),
     onSubmit: (values) => {
-      console.log(values);
-      axios
-        .post("http://localhost:8080/api/login", {
-          email: values.emailSi,
-          password: values.passwordSi,
-        })
+      var formdata = new FormData();
+      formdata.append("email", values.emailSi);
+      formdata.append("password", values.passwordSi);
+
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+        redirect: "follow",
+      };
+
+      fetch("http://localhost:8080/api/login", requestOptions)
+        .then((response) => response.text())
         .then((result) => {
-          console.log(result.data);
-          Storage.SetItem("user", result.data);
+          if (result !== "") {
+            toast.success("Login success!", {
+              position: "bottom-center",
+              autoClose: 3000,
+            });
+            localStorage.setItem("user", result);
+            navigate("/");
+          } else {
+            setSuccess(false);
+            toast.error("Your email or password is incorect!", {
+              position: "bottom-center",
+              autoClose: 3000,
+              theme: "dark",
+            });
+          }
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => console.log("error", error));
     },
   });
 
@@ -81,17 +99,21 @@ const Signin = () => {
                   onChange={formik.handleChange}
                   value={formik.values.emailSi}
                   // required
-
                   name="emailSi"
                   id="emailSi"
                   placeholder="Enter Your Email"
                   className="text-sm w-iW px-3 py-10 rounded bg-inputColor outline-none font-roboto text-black/90"
                 />
-                {formik.errors.emailSi && (
+                {formik.errors.emailSi ? (
                   <p className="errorMsg text-[10px] text-red w-iW">
                     {formik.errors.emailSi}
                   </p>
-                )}
+                ) : null}
+                {!succes ? (
+                  <p className="errorMsg text-[10px] text-red w-iW">
+                    Your email or password is incorrect
+                  </p>
+                ) : null}
               </div>
               <div className="password-box flex flex-col">
                 <label className="text-xs font-medium" htmlFor="password">
@@ -107,13 +129,12 @@ const Signin = () => {
                   placeholder="Enter Your Password"
                   className="text-sm w-iW px-3 py-10 rounded bg-inputColor outline-none font-roboto text-black/90"
                 />
-                {formik.errors.passwordSi && (
+                {formik.errors.passwordSi ? (
                   <p className="errorMsg text-[10px] text-red w-iW">
                     {formik.errors.passwordSi}
                   </p>
-                )}
+                ) : null}
               </div>
-
               <div className="forgotpass-box w-iW flex justify-end text-sm text-primaryblue font-semibold">
                 <label
                   htmlFor="my-modal-resetpass"
@@ -131,7 +152,6 @@ const Signin = () => {
                   Sign In
                 </button>
               </div>
-
               <div className="signup-box w-iW flex justify-center text-sm mb-5">
                 <span className="">
                   Don't have an account?{" "}
@@ -147,7 +167,6 @@ const Signin = () => {
             </div>
           </div>
         </form>
-
         {/* sign up modal */}
         <input type="checkbox" id="my-modal-signup" className="modal-toggle" />
         <div className="modal ">

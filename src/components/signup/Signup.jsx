@@ -1,27 +1,35 @@
 import React from "react";
-import axios from "axios";
+import {useNavigate} from "react-router-dom";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-
+import authService from "../../Services/auth.service";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Signup = () => {
+  let navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       fname: "",
       lname: "",
       email: "",
+      birthDay: "",
+      gender: "",
       password: "",
-      repassowrd: "",
-      policy: "",
+      repassword: "",
     },
     validationSchema: Yup.object({
       fname: Yup.string().required("Required"),
       lname: Yup.string().required("Required"),
+
       email: Yup.string()
         .required("Required")
         .matches(
           /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
           "Please enter a valid email address"
         ),
+      birthDay: Yup.string().required("Required"),
+      gender: Yup.string().required("Required"),
       password: Yup.string()
         .required("Required")
         .matches(
@@ -34,18 +42,33 @@ const Signup = () => {
     }),
     onSubmit: (values) => {
       console.log(values);
-      axios
-        .post("http://localhost:8080/api/register", {
-          email: values.email,
-          password: values.password,
-          firstName: values.fname,
-          lastName: values.lname,
-        })
+      authService
+        .register(
+          values.fname,
+          values.lname,
+          values.email,
+          values.birthDay,
+          values.gender,
+          values.password
+        )
         .then((result) => {
           console.log(result.data);
+          if (result.status === 200) {
+            toast.success("Congratulation 🎉🎉! Please login", {
+              position: "bottom-center",
+              autoClose: 3000,
+              theme: "dark",
+            });
+          }
+          formik.resetForm();
         })
         .catch((error) => {
           console.log(error);
+          toast.error("Please try again 😫😫!", {
+            position: "bottom-center",
+            autoClose: 3000,
+            theme: "dark",
+          });
         });
     },
   });
@@ -116,6 +139,45 @@ const Signup = () => {
                 </p>
               )}
             </div>
+            <div className="name-box flex w-iW justify-between">
+              <div className="birthDay w-[150px] ">
+                <label className="text-xs font-medium" htmlFor="birthDay">
+                  BirthDay
+                </label>
+                <input
+                  className="text-sm w-[150px] px-3 py-[9px] rounded bg-inputColor outline-none font-roboto text-black/90"
+                  type="date"
+                  id="birthDay"
+                  name="birthDay"
+                  value={formik.values.birthDay}
+                  onChange={formik.handleChange}
+                />
+                {formik.errors.birthDay && (
+                  <p className="errorMsg text-[10px] text-red">
+                    {formik.errors.birthDay}
+                  </p>
+                )}
+              </div>
+              <div className="gender w-[150px] ">
+                <label className="text-xs font-medium">Gender</label>
+                <select
+                  value={formik.values.gender}
+                  onChange={formik.handleChange}
+                  id="gender"
+                  name="gender"
+                  class="text-sm w-[150px] px-2 py-[10px] rounded bg-inputColor outline-none font-roboto text-black/90"
+                >
+                  <option value="" disabled selected></option>
+                  <option value="0">Male</option>
+                  <option value="1">Female</option>
+                </select>
+                {formik.errors.gender && (
+                  <p className="errorMsg text-[10px] text-red">
+                    {formik.errors.gender}
+                  </p>
+                )}
+              </div>
+            </div>
             <div className="password-box flex flex-col">
               <label className="text-xs font-medium" htmlFor="password">
                 Password
@@ -156,16 +218,8 @@ const Signup = () => {
             </div>
 
             <div className="text-xs policy-box w-iW flex items-start ">
-              <input
-                className="accent-primaryblue mt-1 mr-2 text-black/90"
-                type="checkbox"
-                name="policy"
-                id="policy"
-                value={formik.values.policy}
-                onChange={formik.handleChange}
-              />
-              <label htmlFor="policy">
-                I’ve read and accepted{" "}
+              <p htmlFor="policy">
+                By clicking Sign Up, you agree to our{" "}
                 <a className="text-primaryblue font-semibold" href="/#">
                   Terms of Service
                 </a>{" "}
@@ -173,7 +227,7 @@ const Signup = () => {
                 <a className="text-primaryblue font-semibold" href="/#">
                   Privacy Policy
                 </a>
-              </label>
+              </p>
             </div>
 
             <div className="w-iW flex justify-center items-center mt-5">

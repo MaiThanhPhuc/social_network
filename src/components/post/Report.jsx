@@ -1,6 +1,9 @@
 import {useState} from "react";
 import {BsCheckCircle} from "react-icons/bs";
-const Report = ({setShowReport}) => {
+import userService from "../../Services/user.service";
+import {toast} from "react-toastify";
+
+const Report = ({postID, setShowReport}) => {
   const [showReason, setShowReason] = useState(false);
   const [showSuccesReport, setShowSuccessReport] = useState(false);
 
@@ -13,6 +16,15 @@ const Report = ({setShowReport}) => {
     "False information",
     "I just don't like it",
   ];
+  const handleReportApi = () => {
+    userService
+      .reportPost(postID)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       {/* Report modal */}
@@ -64,6 +76,7 @@ const Report = ({setShowReport}) => {
                     onClick={() => {
                       setShowSuccessReport(true);
                       setShowReason(false);
+                      handleReportApi();
                     }}
                     className="py-2 px-1 text-left w-full text-base hover:bg-black/10"
                   >
