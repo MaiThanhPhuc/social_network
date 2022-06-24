@@ -44,14 +44,13 @@ const NewPostForm = ({Avatar}) => {
   const notify = () =>
     (toastId.current = toast("Upload in progress, please wait...", {
       autoClose: false,
-      themes: "dark",
+      theme: "dark",
     }));
   const updateNoti = () =>
     toast.update(toastId.current, {
-      render: "Post Success ✔",
-      type: toast.TYPE.SUCCESS,
+      render: "Post Success",
       autoClose: 4000,
-      themes: "dark",
+      theme: "dark",
     });
   const addImagePost = async (ID) => {
     var formdata = new FormData();

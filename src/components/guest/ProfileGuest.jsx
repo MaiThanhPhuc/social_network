@@ -1,24 +1,33 @@
-import {useState, useEffect} from "react";
-import {AiOutlineEdit} from "react-icons/ai";
-import {Link} from "react-router-dom";
+import {useState} from "react";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {MdOutlineReportProblem} from "react-icons/md";
 import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ProfileGuest = ({userData}) => {
-  const [follow, setFollow] = useState(false);
-
+const ProfileGuest = ({stompClient, userData}) => {
+  const [follow, setFollow] = useState(userData.follow);
+  const temp = JSON.parse(localStorage.getItem("user"));
+  const Id = temp.userId;
   const handleFollow = () => {
     setFollow(follow ? false : true);
+    userService
+      .followUser(Id, userData.id)
+      .then((res) => {
+        stompClient.send(
+          `/app/sendNotification`,
+          {},
+          JSON.stringify(res.data.data)
+        );
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleReportUser = () => {
     userService
       .reportUser(userData.id)
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
           toast.success(
             "Your feedback is important in helping us keep the us community safe",
@@ -38,7 +47,7 @@ const ProfileGuest = ({userData}) => {
       <div className="bg-white mb-4 flex flex-col items-center rounded py-8 gap-6">
         <div className="heading-profile flex flex-col justify-center items-center gap-3 ">
           <div className="avatar ">
-            <div class="w-UserAvatar rounded-full hover:cursor-pointer">
+            <div className="w-UserAvatar rounded-full hover:cursor-pointer">
               <img
                 src={
                   userData.imageUrl !== null ? userData.imageUrl : avatarDefault
@@ -49,7 +58,7 @@ const ProfileGuest = ({userData}) => {
           </div>
           <div className="name-user">
             <h1 className="font-bold text-black text-xl">
-              {localStorage.getItem("userName")}
+              {userData.firstName + " " + userData.lastName}
             </h1>
           </div>
         </div>

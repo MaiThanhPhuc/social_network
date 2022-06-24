@@ -8,18 +8,18 @@ import CommentLoad from "./CommentLoad";
 import Report from "./Report";
 import Share from "./Share";
 import avatarDefault from "../../Resource/Image/avatar.png";
+import {Link} from "react-router-dom";
 
-const Post = ({postData}) => {
+const Post = ({postData, stompClient}) => {
   const [like, setLike] = useState(postData.countLiked);
   const [isLike, setIsLike] = useState(postData.liked);
   const [showCmt, setShowCmt] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [sizeCmt, setSizeCmt] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [sizeCmt, setSizeCmt] = useState(2);
   const [cmts, setCmts] = useState([]);
   const [load, setLoad] = useState(false);
-
+  const [reload, setReload] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   const Id = user.userId;
 
@@ -40,12 +40,17 @@ const Post = ({postData}) => {
     await userService
       .getComment(postData.id, sizeCmt)
       .then((res) => {
-        setCmts(res);
+        setCmts(res.reverse());
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    fetchDataComment();
+  }, [reload]);
+
   useEffect(() => {
     if (cmts.length !== 0) {
       setLoad(true);
@@ -55,7 +60,16 @@ const Post = ({postData}) => {
   const setLikeApi = async () => {
     await userService
       .likePost(Id, postData.id)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        if (res.data.data !== null) {
+          stompClient.send(
+            `/app/sendNotification`,
+            {},
+            JSON.stringify(res.data.data)
+          );
+        }
+      })
       .catch((err) => console.log(err));
   };
 
@@ -81,12 +95,12 @@ const Post = ({postData}) => {
               </div>
             </button>
             <div className="box-left flex flex-col ml-2 ">
-              <a
-                href="/"
+              <Link
+                to={`user/${postData.userCreate.id}`}
                 className="user-name text-black font-semibold cursor-pointer"
               >
                 {postData.userCreate.firstName}
-              </a>
+              </Link>
               <span className="text-grayText text-xs font-semibold">
                 {postData.createTime} minutes ago
               </span>
@@ -162,7 +176,16 @@ const Post = ({postData}) => {
               </button>
             </div>
           ) : null}
-          {showCmt ? <CommentBox userID={Id} postID={postData.id} /> : null}
+          {showCmt ? (
+            <CommentBox
+              stompClient={stompClient}
+              userID={Id}
+              postID={postData.id}
+              setReload={setReload}
+              setSizeCmt={setSizeCmt}
+              sizeCmt={sizeCmt}
+            />
+          ) : null}
         </div>
       </div>
     </>

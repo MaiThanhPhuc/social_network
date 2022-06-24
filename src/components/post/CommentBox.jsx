@@ -2,7 +2,15 @@ import React, {useState} from "react";
 import Picker from "emoji-picker-react";
 import TextareaAutosize from "react-textarea-autosize";
 import {BsEmojiSmile} from "react-icons/bs";
-const Commentbox = ({userID, postID}) => {
+
+const Commentbox = ({
+  stompClient,
+  userID,
+  postID,
+  setReload,
+  setSizeCmt,
+  sizeCmt,
+}) => {
   const [cmt, setCmt] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const onEmojiClick = (event, emojiObject) => {
@@ -29,13 +37,24 @@ const Commentbox = ({userID, postID}) => {
 
     fetch("http://localhost:8080/api/comment", requestOptions)
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((result) => {
+        const payload = JSON.parse(result).data;
+        stompClient.send(
+          `/app/sendNotification`,
+          {},
+          JSON.stringify(payload.notificationPayload)
+        );
+        setReload(true);
+      })
       .catch((error) => console.log("error", error));
   };
 
   const handleCmt = (e) => {
+    e.preventDefault();
     postComment();
     setCmt("");
+    setSizeCmt(sizeCmt + 1);
+    setReload(true);
   };
   return (
     <>

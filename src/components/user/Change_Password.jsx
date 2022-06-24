@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import {useOutletContext} from "react-router-dom";
 
 const Change_Password = () => {
-  const userData = useOutletContext();
+  const [userData, setLoad] = useOutletContext();
   const formik = useFormik({
     initialValues: {
       email: userData.email,
@@ -46,7 +46,7 @@ const Change_Password = () => {
         .then((response) => response.text())
         .then((result) => {
           console.log(result);
-          toast.success("Password Changed Successfully 🔑🔑!", {
+          toast("Password Changed Successfully 🔑🔑!", {
             position: "bottom-center",
             autoClose: 3000,
             theme: "dark",
@@ -62,8 +62,8 @@ const Change_Password = () => {
       <form onSubmit={formik.handleSubmit}>
         <div className="bg-white rounded h-[600px]">
           <div className="flex flex-col gap-6 py-8 items-center">
-            <div className="avatar-change flex items-center ">
-              <button class="avatar w-1/4 flex justify-end">
+            <div className="avatar-change flex items-center justify-center w-[300px] ">
+              <a class="avatar w-1/4 flex justify-end">
                 <div class="w-9 rounded-full">
                   <img
                     src={
@@ -73,9 +73,9 @@ const Change_Password = () => {
                     }
                   />
                 </div>
-              </button>
+              </a>
               <div className="user-name-change-avatar ml-8">
-                <h2 className="font-semibold text-lg leading-[20px]">
+                <h2 className="font-semibold text-base">
                   {localStorage.getItem("userName")}
                 </h2>
               </div>

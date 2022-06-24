@@ -45,9 +45,10 @@ const Signin = () => {
         .then((response) => response.text())
         .then((result) => {
           if (result !== "") {
-            toast.success("Login success!", {
+            toast("Login success!", {
               position: "bottom-center",
               autoClose: 3000,
+              theme: "dark",
             });
             localStorage.setItem("user", result);
             navigate("/");

@@ -1,17 +1,46 @@
 import {useEffect, useState} from "react";
-import {Routes, Route, Link, Outlet} from "react-router-dom";
-import Change_Password from "../../components/edit_profile/Change_Password";
-import Edit_Profile from "../../components/edit_profile/Edit_Profile";
+import {useLocation, Link, Outlet} from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import userService from "../../Services/user.service";
 import avatarDefault from "../../Resource/Image/avatar.png";
-
+const sidebarItems = [
+  {
+    display: "Edit Profile",
+    to: "/accounts",
+    section: "",
+  },
+  {
+    display: "Change Password",
+    to: "changepassword",
+    section: "/changepassword",
+  },
+  {
+    display: "Following",
+    to: "/",
+    section: "following",
+  },
+  {
+    display: "Help",
+    to: "/",
+    section: "help",
+  },
+];
 const EditProfile = () => {
   const [user, setUser] = useState(null);
   const [avatar, setAvatar] = useState();
-
+  const [reload, setReload] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const location = useLocation();
   const temp = JSON.parse(localStorage.getItem("user"));
   const Id = temp.userId;
+
+  useEffect(() => {
+    const curPath = window.location.pathname.split("/accounts")[1];
+    const activeItem = sidebarItems.findIndex(
+      (item) => item.section === curPath
+    );
+    setActiveIndex(curPath.length === 0 ? 0 : activeItem);
+  }, [location]);
 
   const fetchUserApi = async () => {
     userService
@@ -28,6 +57,11 @@ const EditProfile = () => {
   useEffect(() => {
     fetchUserApi();
   }, []);
+
+  useEffect(() => {
+    fetchUserApi();
+  }, [reload]);
+
   return (
     <>
       <div className="bg-gray">
@@ -42,44 +76,29 @@ const EditProfile = () => {
             <div className="col-span-6">
               <div className="bg-white rounded pb-1 ">
                 <div className="grid grid-cols-8 ">
-                  <div className="menu-edit-user col-span-2 border-r border-black/20 ">
+                  <div className="menu-edit-user col-span-2 border-r border-black/20  ">
                     <ul className=" space-y-2 w-full">
-                      <li>
-                        <Link
-                          to="edit"
-                          className="pl-7 py-4 block hover:bg-grayLight/50 focus:font-semibold hover:border-black/20 focus:border-black border-l-2 border-transparent focus:bg-grayLight/50  "
-                        >
-                          Edit Profile
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="changepassword"
-                          className="pl-7 py-4 block hover:bg-grayLight/50 focus:font-semibold hover:border-black/20 focus:border-black border-l-2 border-transparent focus:bg-grayLight/50 active: "
-                        >
-                          Change Password
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to=""
-                          className="pl-7 py-4 block hover:bg-grayLight/50 focus:font-semibold hover:border-black/20 focus:border-black border-l-2 border-transparent focus:bg-grayLight/50 "
-                        >
-                          Friend
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to=""
-                          className="pl-7 py-4 block hover:bg-grayLight/50 focus:font-semibold hover:border-black/20 focus:border-black border-l-2 border-transparent focus:bg-grayLight/50 "
-                        >
-                          Help
-                        </Link>
-                      </li>
+                      {sidebarItems.map((item, index) => (
+                        <li>
+                          <Link
+                            to={item.to}
+                            key={index}
+                            className={`pl-7 py-4 block hover:bg-grayLight/50 border-l-2 hover:border-black/20 ${
+                              activeIndex === index
+                                ? "boder-black bg-grayLight font-semibold"
+                                : "border-transparent"
+                            }  `}
+                          >
+                            {item.display}
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                   <div className="col-span-6 flex flex-col gap-6">
-                    {user !== null ? <Outlet context={user} /> : null}
+                    {user !== null ? (
+                      <Outlet context={[user, setReload]} />
+                    ) : null}
                   </div>
                 </div>
               </div>

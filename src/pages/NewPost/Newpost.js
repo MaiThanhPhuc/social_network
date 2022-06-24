@@ -1,5 +1,5 @@
 import Navbar from "../../components/navbar/Navbar";
-import NewPostForm from "../../components/newpost/NewPostForm";
+import NewPostForm from "../../components/post/NewPostForm";
 import userService from "../../Services/user.service";
 import React, {useState, useEffect} from "react";
 import avatarDefault from "../../Resource/Image/avatar.png";

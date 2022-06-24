@@ -7,8 +7,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import {useOutletContext} from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 const Edit_Profile = () => {
-  const userData = useOutletContext();
-
+  const [userData, setLoad] = useOutletContext();
   const [avatar, setAvatar] = useState(userData.imageUrl);
   const [file, setFile] = useState();
   const [showAvatarModal, setshowAvatarModal] = useState(false);
@@ -20,20 +19,21 @@ const Edit_Profile = () => {
       .then((res) => {
         console.log(res);
         updateNoti();
+        localStorage.setItem("userImgUrl", avatar);
+        setLoad(true);
       })
       .catch((err) => console.log(err));
   };
   const notify = () =>
     (toastId.current = toast("Upload in progress, please wait...", {
       autoClose: false,
-      themes: "dark",
+      theme: "dark",
     }));
   const updateNoti = () =>
     toast.update(toastId.current, {
-      render: "Post Success ✔",
-      type: toast.TYPE.SUCCESS,
+      render: "Update photo success",
       autoClose: 4000,
-      themes: "dark",
+      theme: "dark",
     });
   const handlePreviewImages = (e) => {
     if (e.target.files) {
@@ -68,7 +68,7 @@ const Edit_Profile = () => {
               autoClose: 3000,
               theme: "dark",
             });
-
+            setLoad(true);
             localStorage.setItem("userName", values.lname + " " + values.fname);
           }
           console.log(res);

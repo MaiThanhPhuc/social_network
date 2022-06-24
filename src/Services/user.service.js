@@ -1,6 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-
+import {over} from "stompjs";
+import SockJS from "sockjs-client";
 const API_URL = "http://localhost:8080/api/";
 
 class UserService {
@@ -24,6 +25,17 @@ class UserService {
     const response = await axios.get(API_URL + `user?userId=${userId}`, {
       headers: authHeader(),
     });
+
+    return response.data.data;
+  }
+
+  async getGuest(userId, guestID) {
+    const response = await axios.get(
+      API_URL + `user/personalPage?userId=${userId}&personalPageId=${guestID}`,
+      {
+        headers: authHeader(),
+      }
+    );
 
     return response.data.data;
   }
@@ -79,6 +91,15 @@ class UserService {
     });
   }
 
+  followUser(userID, userFollowed) {
+    return axios.post(
+      API_URL + `user/follow?userId=${userID}&userFollowedId=${userFollowed}`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
+
   reportPost(postID) {
     return axios.put(API_URL + `report/post/${postID}`, {
       headers: authHeader(),
@@ -90,6 +111,32 @@ class UserService {
       API_URL + "user",
       {id, firstName, lastName, bio, address, birthday},
       {headers: authHeader()}
+    );
+  }
+
+  async searchUser(keyword) {
+    const res = await axios.get(API_URL + `user/search?keyword=${keyword}`, {
+      headers: authHeader(),
+    });
+    return res.data.data;
+  }
+
+  async getNotification(userID, page) {
+    const res = await axios.get(
+      API_URL + `user/notification?userId=${userID}&page=${page}&size=5`,
+      {
+        headers: authHeader(),
+      }
+    );
+    return res.data.data;
+  }
+
+  setNotification(notiId) {
+    return axios.put(
+      API_URL + `notification/setSeen?notificationId=${notiId}`,
+      {
+        headers: authHeader(),
+      }
     );
   }
 }

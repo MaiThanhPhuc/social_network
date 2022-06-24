@@ -7,6 +7,12 @@ import {Link} from "react-router-dom";
 import userService from "../../Services/user.service";
 import InfiniteScroll from "react-infinite-scroll-component";
 import avatarDefault from "../../Resource/Image/avatar.png";
+import {toast} from "react-toastify";
+import {over} from "stompjs";
+import SockJS from "sockjs-client";
+import "react-toastify/dist/ReactToastify.css";
+var stompClient = null;
+
 const TimeLine = () => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
@@ -15,6 +21,28 @@ const TimeLine = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const Id = user.userId;
   const [avatar, setAvatar] = useState();
+
+  const connect = () => {
+    let Sock = new SockJS("http://localhost:8080/ws");
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected);
+  };
+
+  const onConnected = () => {
+    stompClient.subscribe(
+      "/notification/" + Id + "/notificationPopUp",
+      onMessageReceived
+    );
+  };
+  const onMessageReceived = (payload) => {
+    var payloadData = JSON.parse(payload.body);
+    console.log(payloadData);
+    toast(payloadData.content, {
+      autoClose: 2000,
+      theme: "dark",
+    });
+  };
+
   useEffect(() => {
     const fetchUserApi = async () => {
       userService
@@ -25,6 +53,7 @@ const TimeLine = () => {
             "userName",
             result.lastName + " " + result.firstName
           );
+          localStorage.setItem("userImgUrl", result.imageUrl);
         })
         .catch((err) => {
           console.log(err);
@@ -33,6 +62,7 @@ const TimeLine = () => {
 
     fetchPostApi();
     fetchUserApi();
+    connect();
   }, []);
 
   const fetchPostApi = async () => {
@@ -95,7 +125,7 @@ const TimeLine = () => {
                 dataLength={posts.length} //This is important field to render the next data
                 next={fetchData}
                 hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
+                loader={<h4 className=" text-center mt-2">Loading...</h4>}
                 endMessage={
                   <p style={{textAlign: "center", marginBottom: "16px"}}>
                     <b>Yay! You have seen it all</b>
@@ -103,7 +133,7 @@ const TimeLine = () => {
                 }
               >
                 {posts.map((post, index) => (
-                  <Post key={index} postData={post} />
+                  <Post key={index} postData={post} stompClient={stompClient} />
                 ))}
               </InfiniteScroll>
             </div>

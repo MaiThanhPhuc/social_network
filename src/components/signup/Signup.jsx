@@ -54,7 +54,7 @@ const Signup = () => {
         .then((result) => {
           console.log(result.data);
           if (result.status === 200) {
-            toast.success("Congratulation 🎉🎉! Please login", {
+            toast("Congratulation 🎉🎉! Please login", {
               position: "bottom-center",
               autoClose: 3000,
               theme: "dark",
@@ -165,9 +165,9 @@ const Signup = () => {
                   onChange={formik.handleChange}
                   id="gender"
                   name="gender"
-                  class="text-sm w-[150px] px-2 py-[10px] rounded bg-inputColor outline-none font-roboto text-black/90"
+                  className="text-sm w-[150px] px-2 py-[10px] rounded bg-inputColor outline-none font-roboto text-black/90"
                 >
-                  <option value="" disabled selected></option>
+                  <option value="" disabled defaultValue></option>
                   <option value="0">Male</option>
                   <option value="1">Female</option>
                 </select>
