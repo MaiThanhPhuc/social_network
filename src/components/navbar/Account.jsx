@@ -2,9 +2,14 @@ import {Link} from "react-router-dom";
 import avatarDefault from "../../Resource/Image/avatar.png";
 
 const Account = ({data}) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const Id = user.userId;
   return (
     <>
-      <Link to={`/user/${data.id}`} className="template cursor-pointer ">
+      <Link
+        to={Id != data.id ? `/user/${data.id}` : "/user"}
+        className="template cursor-pointer "
+      >
         <div className="flex w-full bg-white border-b-[1px] border-gray border-indigo-500 p-1 hover:bg-black/10">
           <div className="w-14 flex flex-col">
             <div className="flex items-center">

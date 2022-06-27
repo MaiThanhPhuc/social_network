@@ -6,6 +6,7 @@ import {toast} from "react-toastify";
 const Report = ({postID, setShowReport}) => {
   const [showReason, setShowReason] = useState(false);
   const [showSuccesReport, setShowSuccessReport] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const listReasons = [
     "It's spam",
@@ -17,12 +18,19 @@ const Report = ({postID, setShowReport}) => {
     "I just don't like it",
   ];
   const handleReportApi = () => {
-    userService
-      .reportPost(postID)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+    var requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`http://localhost:8080/api/report/post/${postID}`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   };
 
   return (

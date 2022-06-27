@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Account from "./Account";
 import Notification from "./Notification";
 const Navbar = ({Avatar}) => {
-  const [noti, setNoti] = useState();
+  const [noti, setNoti] = useState(true);
   const [notiData, setNotiData] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -41,7 +41,9 @@ const Navbar = ({Avatar}) => {
         setNotiData([...notiData, ...res]);
         setCountNoti(res);
         setPage(page + 1);
-        setNoti(res[0].seen);
+        if (res[0] !== undefined) {
+          setNoti(res[0].seen);
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -55,13 +57,21 @@ const Navbar = ({Avatar}) => {
   }, []);
 
   const setNotiSeenApi = () => {
-    userService
-      .setNotification(notiData[0].id)
-      .then((res) => {
-        console.log(res);
-        setNoti(true);
-      })
-      .catch((err) => console.log(err));
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+    var requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://localhost:8080/api/notification/setSeen?notificationId=${notiData[0].id}`,
+      requestOptions
+    )
+      .then(() => setNoti(true))
+      .catch((error) => console.log("error", error));
   };
 
   const fetchData = () => {
@@ -167,7 +177,8 @@ const Navbar = ({Avatar}) => {
             </ul>
           </div>
 
-          <button
+          <Link
+            to={"/inbox"}
             onClick={() => {
               setMess(false);
             }}
@@ -180,7 +191,7 @@ const Navbar = ({Avatar}) => {
               }
             ></span>
             <AiOutlineMessage size={25} />
-          </button>
+          </Link>
 
           <div className="dropdown dropdown-end mt-1">
             <label tabIndex="0">
@@ -196,7 +207,7 @@ const Navbar = ({Avatar}) => {
             >
               <li>
                 <Link
-                  to={`/user/${Id}`}
+                  to={`/user`}
                   className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                 >
                   My wall

@@ -1,8 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import {over} from "stompjs";
-import SockJS from "sockjs-client";
 const API_URL = "http://localhost:8080/api/";
+const user = JSON.parse(localStorage.getItem("user"));
 
 class UserService {
   async getPostHomePage(userID, page) {
@@ -46,20 +45,6 @@ class UserService {
       {content, userId},
       {
         headers: authHeader(),
-      }
-    );
-  }
-
-  addImgUser(userID, img) {
-    return axios.post(
-      API_URL + `user/upimg?userId=${userID}`,
-      {
-        img,
-      },
-      {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
       }
     );
   }
@@ -131,13 +116,41 @@ class UserService {
     return res.data.data;
   }
 
-  setNotification(notiId) {
-    return axios.put(
-      API_URL + `notification/setSeen?notificationId=${notiId}`,
+  sendCodeReset(email) {
+    return axios.post(
+      API_URL + `resetPassword`,
+      {email},
       {
         headers: authHeader(),
       }
     );
+  }
+  resetPassword(token, password) {
+    return axios.post(
+      API_URL + `savePassword`,
+      {token, password},
+      {
+        headers: authHeader(),
+      }
+    );
+  }
+
+  getFollower(userID) {
+    const res = axios.get(API_URL + `user/follower?userId=${userID}`, {
+      headers: authHeader(),
+    });
+    return res;
+  }
+
+  getMessage(userID, receiverID, page) {
+    const res = axios.get(
+      API_URL +
+        `message?senderId=${userID}&receiverId=${receiverID}&page=${page}&size=10`,
+      {
+        headers: authHeader(),
+      }
+    );
+    return res;
   }
 }
 

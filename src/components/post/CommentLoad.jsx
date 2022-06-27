@@ -1,4 +1,5 @@
 import avatarDefault from "../../Resource/Image/avatar.png";
+import {format} from "timeago.js";
 
 const CommentLoad = ({cmtData}) => {
   return (
@@ -27,7 +28,7 @@ const CommentLoad = ({cmtData}) => {
             </div>
           </div>
           <div className="info-cmt-post text-xs ">
-            <span>{cmtData.createTime}m</span>
+            <span>{format(cmtData.createTime)}</span>
             <button className="font-semibold ml-2 hover:underline">
               Reply
             </button>

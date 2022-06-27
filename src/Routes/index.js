@@ -9,21 +9,31 @@ import MessagePage from "../pages/MessagePage/MessagePage";
 import NotFound from "../pages/NotFound/NotFound";
 import Edit_Profile from "../components/user/Edit_Profile";
 import Change_Password from "../components/user/Change_Password";
+import FollowerUser from "../components/user/FollowerUser";
+import AdminPage from "../pages/AdminPage/AdminPage";
+import Dashboard from "../components/admin/Dashboard";
+import UserManagement from "../components/admin/UserManagement";
 
 const index = () => {
-  const temp = JSON.parse(localStorage.getItem("user"));
-  const Id = temp.userId;
   return (
     <>
       <Routes>
         <Route index path="/login" element={<Homepage />} />
         <Route path="/" element={<TimeLine />} />
-        <Route path={`/user/${Id}`} element={<Profile />} />
+        <Route path={`/user`} element={<Profile />} />
         <Route path={"/user/:userID"} element={<Guest />} />
         <Route path="/newpost" element={<Newpost />} />
+        <Route path="admin" element={<AdminPage />}>
+          <Route index element={<Dashboard />} />
+          <Route path="user" element={<UserManagement />} />
+          {/* <Route path="report" element={<FollowerUser />} />
+          <Route path="post" element={<FollowerUser />} /> */}
+        </Route>
+
         <Route path="accounts" element={<EditProfile />}>
           <Route index element={<Edit_Profile />} />
           <Route path="changepassword" element={<Change_Password />} />
+          <Route path="follower" element={<FollowerUser />} />
         </Route>
         <Route path="/guest" element={<Guest />} />
         <Route path="/inbox" element={<MessagePage />} />

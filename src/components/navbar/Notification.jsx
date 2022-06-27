@@ -1,4 +1,5 @@
 import avatarDefault from "../../Resource/Image/avatar.png";
+import {format} from "timeago.js";
 
 const Notification = ({data}) => {
   return (
@@ -23,7 +24,9 @@ const Notification = ({data}) => {
           </div>
           <div className="w-full flex flex-col ">
             <span className=" text-sm text-bodytxt">{data.content}</span>
-            <span className=" text-sm text-bodytxt">{data.createTime}</span>
+            <span className=" text-sm text-bodytxt">
+              {format(data.createTime)}
+            </span>
           </div>
         </div>
       </div>

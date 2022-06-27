@@ -7,10 +7,12 @@ const Commentbox = ({
   stompClient,
   userID,
   postID,
-  setReload,
   setSizeCmt,
   sizeCmt,
+  setReload,
 }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.access_token;
   const [cmt, setCmt] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const onEmojiClick = (event, emojiObject) => {
@@ -21,7 +23,7 @@ const Commentbox = ({
   const postComment = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
+    myHeaders.append("Authorization", `Bearer ${token}`);
     var raw = JSON.stringify({
       content: cmt,
       userId: userID,
@@ -39,6 +41,7 @@ const Commentbox = ({
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result).data;
+        console.log(payload);
         stompClient.send(
           `/app/sendNotification`,
           {},
@@ -54,7 +57,6 @@ const Commentbox = ({
     postComment();
     setCmt("");
     setSizeCmt(sizeCmt + 1);
-    setReload(true);
   };
   return (
     <>

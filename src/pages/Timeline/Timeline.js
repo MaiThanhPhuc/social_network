@@ -36,7 +36,6 @@ const TimeLine = () => {
   };
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
-    console.log(payloadData);
     toast(payloadData.content, {
       autoClose: 2000,
       theme: "dark",

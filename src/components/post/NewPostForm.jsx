@@ -17,6 +17,7 @@ const NewPostForm = ({Avatar}) => {
   const toastId = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.access_token;
   const Id = user.userId;
   const onEmojiClick = (event, emojiObject) => {
     setContent((prevInput) => prevInput + emojiObject.emoji);
@@ -54,17 +55,20 @@ const NewPostForm = ({Avatar}) => {
     });
   const addImagePost = async (ID) => {
     var formdata = new FormData();
+    var myHeaders = new Headers();
     formdata.append("img", file);
-
+    myHeaders.append("Authorization", `Bearer ${token}`);
     var requestOptions = {
       method: "PUT",
+      headers: myHeaders,
       body: formdata,
       redirect: "follow",
     };
 
     fetch(`http://localhost:8080/api/post/upImg?postId=${ID}`, requestOptions)
       .then((response) => {
-        if (response.status === 200) {
+        console.log(response);
+        if (response.status == 200) {
           updateNoti();
         }
       })

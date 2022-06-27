@@ -6,6 +6,8 @@ import {useOutletContext} from "react-router-dom";
 
 const Change_Password = () => {
   const [userData, setLoad] = useOutletContext();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.access_token;
   const formik = useFormik({
     initialValues: {
       email: userData.email,
@@ -28,7 +30,7 @@ const Change_Password = () => {
     onSubmit: (values) => {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-
+      myHeaders.append("Authorization", `Bearer ${token}`);
       var raw = JSON.stringify({
         email: values.email,
         oldPassword: values.currentPass,

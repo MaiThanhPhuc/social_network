@@ -1,56 +1,148 @@
-import {useState} from "react";
+import {useState, useRef} from "react";
+import avatarDefault from "../../Resource/Image/avatar.png";
+import Carousel from "./Carousel";
+import Picker from "emoji-picker-react";
+import TextareaAutosize from "react-textarea-autosize";
+import {BsEmojiSmile} from "react-icons/bs";
+import {toast} from "react-toastify";
 
-const Share = ({setShowShareModal}) => {
-  const [check, setCheck] = useState(false);
-  const [inputUser, setInputUser] = useState(["123213", "12321", "adwdawd "]);
-  const handleInputChange = (e) => {};
+const Share = ({postData, stompClient, setShowShareModal}) => {
+  const [showPicker, setShowPicker] = useState(false);
+  const [cmt, setCmt] = useState("");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const Id = user.userId;
+  const token = user.access_token;
+
+  const toastId = useRef(null);
+
+  const notify = () =>
+    (toastId.current = toast("Share post in progress, please wait...", {
+      autoClose: false,
+      theme: "dark",
+    }));
+
+  const updateNoti = () =>
+    toast.update(toastId.current, {
+      render: "Share success",
+      autoClose: 3000,
+      theme: "dark",
+    });
+
+  const onEmojiClick = (event, emojiObject) => {
+    setCmt((prevInput) => prevInput + emojiObject.emoji);
+    setShowPicker(false);
+  };
+
+  const handleSharePost = () => {
+    notify();
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    var raw = JSON.stringify({
+      content: cmt,
+      userId: Id,
+      postSharedId: postData.id,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:8080/api/postshare", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        updateNoti();
+        const payload = JSON.parse(result);
+        stompClient.send(
+          `/app/sendNotification`,
+          {},
+          JSON.stringify(payload.data)
+        );
+        setShowShareModal(false);
+        setCmt("");
+      })
+      .catch((error) => console.log("error", error));
+  };
+
   return (
     <>
       <div class="modal visible opacity-100 pointer-events-auto">
-        <div class="modal-box w-shareWidth max-w-5xl relative p-0">
+        <div class="modal-box w-shareWidth max-w-7xl max-h-[800px] relative p-0">
           <button
             onClick={() => setShowShareModal(false)}
             class="btn btn-sm btn-circle absolute right-2 top-2"
           >
             ✕
           </button>
-          <h3 class="text-xl font-bold text-center pt-4 ">Share</h3>
+          <h3 class="text-xl font-bold text-center pt-4 ">Share Post</h3>
           <div className=" mt-4">
-            <div className="search-box flex justify-center border-y border-black/10 py-4 px-4">
-              <label htmlFor="searchShare" className="text-lg font-semibold">
-                To:
-              </label>
-              <input
-                id="searchShare"
-                name="searchShare"
-                type="text"
-                className="ml-6 text-lg w-full px-2 outline-none"
+            <div className="relative search-box flex justify-center border-y border-black/10 py-4 px-4">
+              <TextareaAutosize
+                maxRows={3}
+                value={cmt}
+                placeholder="What do you think?"
+                onChange={(e) => setCmt(e.target.value)}
+                className="w-full outline-none rounded resize-none text-black text-base py-1 pl-2"
               />
+              <button>
+                <BsEmojiSmile
+                  className="emoji-icon w-7 h-7 p-1 hover:bg-black/10 rounded-full"
+                  onClick={() => setShowPicker((val) => !val)}
+                />
+              </button>
+              {showPicker ? (
+                <Picker
+                  disableSearchBar={true}
+                  pickerStyle={{
+                    width: "70%",
+                    right: "5%",
+                    top: "80%",
+                    position: "absolute",
+                    zIndex: "10",
+                  }}
+                  onEmojiClick={onEmojiClick}
+                />
+              ) : null}
             </div>
-            <h3 className="text-base font-semibold py-4 px-4 ">Suggested</h3>
-            <ul className="listUser overflow-y-scroll max-h-80 pb-4 ">
-              <li>
-                <button
-                  onClick={() => (check ? setCheck(false) : setCheck(true))}
-                  className="flex items-center justify-between w-full hover:bg-black/10 p-2 "
-                >
-                  <div className="avatar-name flex items-center gap-2 pl-2">
-                    <div class="avatar">
-                      <div class="w-11 rounded-full">
-                        <img src="https://api.lorem.space/image/face?hash=92310" />
-                      </div>
-                    </div>
-                    <h2 className="username text-base font-semibold">Ten</h2>
+            <div className=" overflow-y-auto max-h-[400px] h-[250px] py-4 px-4 text-black text-lg flex flex-col">
+              <div className="heading flex items-center">
+                <button className="avatar">
+                  <div className="w-[40px] rounded-full">
+                    <img
+                      src={
+                        postData.userCreate.imageUrl != null
+                          ? postData.userCreate.imageUrl
+                          : avatarDefault
+                      }
+                    />
                   </div>
-                  <input
-                    id="checkeduser"
-                    type="checkbox"
-                    checked={check}
-                    class="checkbox outline-none checkbox-xs p-2 checkbox-primary"
-                  />
                 </button>
-              </li>
-            </ul>
+                <span className="headingname font-semibold ml-1 ">
+                  {postData.userCreate.lastName +
+                    " " +
+                    postData.userCreate.firstName}
+                </span>
+              </div>
+              <div className="content ml-4 py-2">
+                <span>{postData.content}</span>
+              </div>
+              <div className="body flex flex-col items-center ">
+                {postData.urlImage != null ? (
+                  <Carousel imageUrl={postData.urlImage} />
+                ) : null}
+              </div>
+            </div>
+            <div className="buttonShare pt-2 pb-4 text-right px-8 border-t border-black/20 ">
+              <button
+                onClick={handleSharePost}
+                className="bg-primaryblue text-white font-semibold text-base px-6 py-1 rounded"
+              >
+                Post
+              </button>
+            </div>
           </div>
         </div>
       </div>

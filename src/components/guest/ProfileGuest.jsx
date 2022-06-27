@@ -11,17 +11,31 @@ const ProfileGuest = ({stompClient, userData}) => {
   const Id = temp.userId;
   const handleFollow = () => {
     setFollow(follow ? false : true);
-    userService
-      .followUser(Id, userData.id)
-      .then((res) => {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${temp.access_token}`);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://localhost:8080/api/user/follow?userId=${Id}&userFollowedId=${userData.id}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        const payload = JSON.parse(result);
+        console.log(payload);
         stompClient.send(
           `/app/sendNotification`,
           {},
-          JSON.stringify(res.data.data)
+          JSON.stringify(payload.data)
         );
-        console.log(res);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => console.log("error", error));
   };
 
   const handleReportUser = () => {

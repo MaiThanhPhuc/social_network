@@ -15,9 +15,9 @@ const sidebarItems = [
     section: "/changepassword",
   },
   {
-    display: "Following",
-    to: "/",
-    section: "following",
+    display: "Follower",
+    to: "follower",
+    section: "/follower",
   },
   {
     display: "Help",

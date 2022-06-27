@@ -5,8 +5,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./styles.css";
 import {Keyboard, Pagination, Navigation} from "swiper";
-import {useState} from "react";
-import {useEffect} from "react";
 const Carousel = ({imageUrl}) => {
   return (
     <>

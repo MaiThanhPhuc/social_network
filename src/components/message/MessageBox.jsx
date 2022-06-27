@@ -1,11 +1,56 @@
-import {BiMessageRoundedAdd, BiSearch, BiCamera, BiHappy} from "react-icons/bi";
-import {FiSettings} from "react-icons/fi";
-import {RiSubtractLine, RiCloseLine} from "react-icons/ri";
+import {BiMessageRoundedAdd} from "react-icons/bi";
 import {BsInfoCircle} from "react-icons/bs";
-import {IoSend} from "react-icons/io5";
-import TextareaAutosize from "react-textarea-autosize";
+import Message from "./Message";
+import InputMessage from "./InputMessage";
+import UserItems from "./UserItems";
+import {useState} from "react";
+import {useRef} from "react";
+import {useEffect} from "react";
 
-const MessageBox = () => {
+const MessageBox = ({stompClient}) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [page, setPage] = useState(0);
+  const [messages, setMessages] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [receiverID, setReceiverID] = useState(0);
+  const [showConversation, setShowConversation] = useState(false);
+  const [scroll, setScroll] = useState(false);
+  const scrollRef = useRef();
+  const fetchDataConversation = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://localhost:8080/api/message?senderId=${user.userId}&receiverId=5&page=${page}&size=10`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        const payload = JSON.parse(result).data;
+        setMessages([...payload, ...messages]);
+        setPage(page + 1);
+        if (payload.length < 10) {
+          setHasMore(false);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {
+    fetchDataConversation();
+  }, []);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({behavior: "smooth"});
+    setScroll(false);
+  }, [scroll]);
+
   return (
     <>
       <div className="bg-white w-messageWidth h-messHeight rounded-lg shadow-sm  border border-black/10 grid grid-cols-8 mr-12">
@@ -20,35 +65,10 @@ const MessageBox = () => {
           </div>
           <div className=" border-b border-black/20"></div>
           <div className="list-user rounded">
-            <div className="user-items flex items-center hover:bg-grayLight rounded px-4 py-2">
-              <button class="avatar">
-                <div class="w-12 rounded-full">
-                  <img src="https://api.lorem.space/image/face?hash=92310" />
-                </div>
-              </button>
-              <div className="box-left flex flex-col ml-2">
-                <a className="user-name text-black font-semibold ">John Wick</a>
-                <span className="text-grayText text-xs font-semibold">
-                  30m ago
-                </span>
-              </div>
-            </div>
-            <div className="user-items flex items-center hover:bg-grayLight rounded px-4 py-2">
-              <button class="avatar">
-                <div class="w-12 rounded-full">
-                  <img src="https://api.lorem.space/image/face?hash=92310" />
-                </div>
-              </button>
-              <div className="box-left flex flex-col ml-2">
-                <a className="user-name text-black font-semibold ">John Wick</a>
-                <span className="text-grayText text-xs font-semibold">
-                  30m ago
-                </span>
-              </div>
-            </div>
+            <UserItems setReceiverID={setReceiverID} />
           </div>
         </div>
-        <div className="col-span-5 relative">
+        <div className="col-span-5 relative h-messHeight">
           <div className="heading-main-chat flex justify-between border-b border-black/20 px-6 py-5">
             <div className="guest-name">
               <h1 className="font-semibold text-lg">John Wick</h1>
@@ -59,25 +79,38 @@ const MessageBox = () => {
               </button>
             </div>
           </div>
-          <div className="bg-black"></div>
 
-          <div className="chat-input flex w-full items-center gap-2 px-4 absolute bottom-0 py-4 border-t border-black/20">
-            <div className="btn-photo-sticker flex text-2xl ">
-              <div className="photo-btn rounded-full p-1 hover:bg-grayLight ">
-                <BiCamera />
+          <div className=" main-chat flex flex-col w-full h-[480px] overflow-y-auto gap-2 p-1 ">
+            {messages[0] !== undefined ? (
+              <div
+                onClick={() => {
+                  if (hasMore) {
+                    setPage(page + 1);
+                    fetchDataConversation();
+                  }
+                }}
+                className="text-center cursor-pointer"
+              >
+                View more old message
               </div>
-              <div className="ticker-btn rounded-full p-1 hover:bg-grayLight">
-                <BiHappy />
-              </div>
-            </div>
-            <TextareaAutosize
-              maxRows={3}
-              placeholder="Type something"
-              className="w-full outline-none border border-black/30 rounded-xl resize-none text-sm py-1 px-2"
+            ) : null}
+            {messages[0] !== undefined ? (
+              messages.map((item) => (
+                <div ref={scrollRef}>
+                  <Message key={item.id} data={item} />
+                </div>
+              ))
+            ) : (
+              <div className="text-center mt-8 font-bold">Let's go 👋👋👋!</div>
+            )}
+          </div>
+          <div className="chat-input">
+            <InputMessage
+              stompClient={stompClient}
+              setScroll={setScroll}
+              messages={messages}
+              setMessages={setMessages}
             />
-            <button className="btn-send  text-xl hover:text-primaryblue/70 text-primaryblue p-1">
-              <IoSend />
-            </button>
           </div>
         </div>
       </div>

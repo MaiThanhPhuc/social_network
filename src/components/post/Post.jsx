@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {AiOutlineHeart, AiFillHeart} from "react-icons/ai";
 import {FaRegComment, FaRegShareSquare, FaRegFlag} from "react-icons/fa";
+import {format} from "timeago.js";
 import userService from "../../Services/user.service";
 import Carousel from "./Carousel";
 import CommentBox from "./CommentBox";
@@ -9,11 +10,11 @@ import Report from "./Report";
 import Share from "./Share";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {Link} from "react-router-dom";
+import PostShare from "./PostShare";
 
 const Post = ({postData, stompClient}) => {
   const [like, setLike] = useState(postData.countLiked);
   const [isLike, setIsLike] = useState(postData.liked);
-  const [showCmt, setShowCmt] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [sizeCmt, setSizeCmt] = useState(2);
@@ -40,7 +41,8 @@ const Post = ({postData, stompClient}) => {
     await userService
       .getComment(postData.id, sizeCmt)
       .then((res) => {
-        setCmts(res.reverse());
+        setCmts(res);
+        setReload(false);
       })
       .catch((err) => {
         console.log(err);
@@ -102,7 +104,7 @@ const Post = ({postData, stompClient}) => {
                 {postData.userCreate.firstName}
               </Link>
               <span className="text-grayText text-xs font-semibold">
-                {postData.createTime} minutes ago
+                {format(postData.createTime)}
               </span>
             </div>
           </div>
@@ -110,8 +112,14 @@ const Post = ({postData, stompClient}) => {
             <span className="text-black text-base">{postData.content}</span>
           </div>
         </div>
+
         <div className="post-image flex justify-center rounded ">
           <Carousel imageUrl={postData.urlImage} />
+        </div>
+        <div className="post-share flex justify-center rounded">
+          {postData.postShared != null ? (
+            <PostShare postData={postData.postShared} />
+          ) : null}
         </div>
         <div className="bottom-post mx-4 ">
           <div className="react-post flex justify-between text-2xl mt-2 ">
@@ -123,12 +131,7 @@ const Post = ({postData, stompClient}) => {
                   className={!isLike && "hidden"}
                 />
               </button>
-              <button
-                className="cmt-post"
-                onClick={() => {
-                  setShowCmt(true);
-                }}
-              >
+              <button className="cmt-post" onClick={() => {}}>
                 <FaRegComment className="hover:text-black/50" />
               </button>
               <button
@@ -137,8 +140,13 @@ const Post = ({postData, stompClient}) => {
               >
                 <FaRegShareSquare className="hover:text-black/50" />
               </button>
+
               {showShareModal ? (
-                <Share setShowShareModal={setShowShareModal} />
+                <Share
+                  postData={postData}
+                  stompClient={stompClient}
+                  setShowShareModal={setShowShareModal}
+                />
               ) : null}
             </div>
             <div className="right ">
@@ -176,16 +184,15 @@ const Post = ({postData, stompClient}) => {
               </button>
             </div>
           ) : null}
-          {showCmt ? (
-            <CommentBox
-              stompClient={stompClient}
-              userID={Id}
-              postID={postData.id}
-              setReload={setReload}
-              setSizeCmt={setSizeCmt}
-              sizeCmt={sizeCmt}
-            />
-          ) : null}
+
+          <CommentBox
+            stompClient={stompClient}
+            userID={Id}
+            postID={postData.id}
+            setSizeCmt={setSizeCmt}
+            sizeCmt={sizeCmt}
+            setReload={setReload}
+          />
         </div>
       </div>
     </>

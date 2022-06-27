@@ -12,17 +12,31 @@ const Edit_Profile = () => {
   const [file, setFile] = useState();
   const [showAvatarModal, setshowAvatarModal] = useState(false);
   const toastId = useRef(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const handleChangeAvatar = () => {
     notify();
-    userService
-      .addImgUser(userData.id, file)
-      .then((res) => {
-        console.log(res);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+    var formdata = new FormData();
+    formdata.append("userId", userData.id);
+    formdata.append("img", file);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:8080/api/user/upimg", requestOptions)
+      .then(() => {
         updateNoti();
         localStorage.setItem("userImgUrl", avatar);
         setLoad(true);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => console.log("error", error));
   };
   const notify = () =>
     (toastId.current = toast("Upload in progress, please wait...", {
@@ -39,7 +53,6 @@ const Edit_Profile = () => {
     if (e.target.files) {
       setFile(e.target.files[0]);
       setAvatar(URL.createObjectURL(e.target.files[0]));
-      console.log(avatar);
     }
   };
 
@@ -62,7 +75,7 @@ const Edit_Profile = () => {
           values.birthday
         )
         .then((res) => {
-          if (res.status == 200) {
+          if (res.status === 200) {
             toast.success("Update Infomation success!", {
               position: "bottom-center",
               autoClose: 3000,

@@ -24,7 +24,7 @@ module.exports = {
         inputRecoveryPassWidth: "250px",
         fW2: "320px",
         mW: "600px",
-        heightRecoveryPass: "300px",
+        heightRecoveryPass: "400px",
         postWidth: "500px",
         newpostHeight: "800px",
         footerWidth: "330px",

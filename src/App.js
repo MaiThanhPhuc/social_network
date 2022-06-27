@@ -7,6 +7,7 @@ function App() {
     <>
       <MyRoutes />
       <ToastContainer
+        pauseOnHover={false}
         position="bottom-center"
         newestOnTop={true}
         limit={3}
