@@ -24,11 +24,11 @@ const Account = ({data}) => {
             </div>
           </div>
           <div className="w-full flex items-center">
-            <div className="">
-              <span className="font-semibold text-base"></span>
-              <div className=" text-sm text-bodytxt pb-1">
+            <div className="flex flex-col">
+              <div className=" text-sm text-bodytxt">
                 {data.lastName + " " + data.firstName}
               </div>
+              <span className=" font-thin text-xs">{data.email}</span>
             </div>
           </div>
         </div>

@@ -3,16 +3,16 @@ import {FaPhotoVideo} from "react-icons/fa";
 import Footer from "../footer/Footer";
 import Picker from "emoji-picker-react";
 import TextareaAutosize from "react-textarea-autosize";
-import ImagesUpload from "./ImagesUpload";
 import {BsEmojiSmile} from "react-icons/bs";
 import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
+import Carousel from "./Carousel";
 import "react-toastify/dist/ReactToastify.css";
 
 const NewPostForm = ({Avatar}) => {
   const [content, setContent] = useState("");
-  const [images, setImages] = useState("");
-  const [file, setFile] = useState();
+  const [images, setImages] = useState([]);
+  const [files, setFiles] = useState();
   const [showPicker, setShowPicker] = useState(false);
   const toastId = useRef(null);
 
@@ -26,10 +26,13 @@ const NewPostForm = ({Avatar}) => {
 
   const handlePreviewImages = (e) => {
     if (e.target.files) {
-      setFile(e.target.files[0]);
-      const imagesArray = URL.createObjectURL(e.target.files[0]);
-      setImages(imagesArray);
-      URL.revokeObjectURL(e.target.files[0]);
+      setFiles(e.target.files);
+      const imagesArray = Array.from(e.target.files).map((file) =>
+        URL.createObjectURL(file)
+      );
+
+      setImages((img) => img.concat(imagesArray));
+      Array.from(e.target.files).map((img) => URL.revokeObjectURL(img));
     }
   };
 
@@ -38,12 +41,12 @@ const NewPostForm = ({Avatar}) => {
       .newPost(content, Id)
       .then((res) => {
         notify();
-        addImagePost(res.data.data.id);
+        Array.from(files).map((file) => addImagePost(res.data.data.id, file));
       })
-      .catch((err) => console.log(err));
+      .catch(() => updateFailedNoti());
   };
   const notify = () =>
-    (toastId.current = toast("Upload in progress, please wait...", {
+    (toastId.current = toast.loading("Upload in progress, please wait...", {
       autoClose: false,
       theme: "dark",
     }));
@@ -51,9 +54,20 @@ const NewPostForm = ({Avatar}) => {
     toast.update(toastId.current, {
       render: "Post Success",
       autoClose: 4000,
+      isLoading: false,
+
       theme: "dark",
     });
-  const addImagePost = async (ID) => {
+  const updateFailedNoti = () =>
+    toast.update(toastId.current, {
+      render: "Post failed please try again ",
+      autoClose: 3000,
+      isLoading: false,
+
+      theme: "dark",
+    });
+
+  const addImagePost = async (ID, file) => {
     var formdata = new FormData();
     var myHeaders = new Headers();
     formdata.append("img", file);
@@ -65,14 +79,23 @@ const NewPostForm = ({Avatar}) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:8080/api/post/upImg?postId=${ID}`, requestOptions)
+    fetch(
+      `https://socialnetwork999.herokuapp.com/api/post/upImg?postId=${ID}`,
+      requestOptions
+    )
       .then((response) => {
         console.log(response);
-        if (response.status == 200) {
+        if (response.status === 200) {
           updateNoti();
+          setContent("");
+          setImages([]);
+          setFiles([]);
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        updateFailedNoti();
+        console.log("error", error);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -80,9 +103,6 @@ const NewPostForm = ({Avatar}) => {
     if (content !== "" || images !== "") {
       newPostApi();
     }
-    setContent("");
-    setImages("");
-    setFile("");
   };
 
   return (
@@ -135,7 +155,7 @@ const NewPostForm = ({Avatar}) => {
                 </div>
               </div>
               <div className="input-file rounded flex flex-col justify-center items-center gap-3 bg-grayLight h-[500px]">
-                {images === "" ? (
+                {images[0] === undefined ? (
                   <div className=" flex flex-col justify-center items-center gap-3">
                     <div className="icons text-black">
                       <FaPhotoVideo size={62} />
@@ -147,6 +167,7 @@ const NewPostForm = ({Avatar}) => {
                       <label className="btn btn-primary text-white text-sm normal-case btn-sm rounded">
                         Select from your computer
                         <input
+                          multiple
                           type="file"
                           name="media"
                           accept="image/*"
@@ -157,7 +178,12 @@ const NewPostForm = ({Avatar}) => {
                     </div>
                   </div>
                 ) : (
-                  <ImagesUpload imageURL={images} setImages={setImages} />
+                  <Carousel
+                    imageUrls={images}
+                    setImages={setImages}
+                    files={files}
+                    setFiles={setFiles}
+                  />
                 )}
               </div>
 

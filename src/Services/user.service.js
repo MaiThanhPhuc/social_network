@@ -1,6 +1,6 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/";
+const API_URL = "https://socialnetwork999.herokuapp.com/api/";
 const user = JSON.parse(localStorage.getItem("user"));
 
 class UserService {
@@ -15,10 +15,13 @@ class UserService {
     return response.data.data;
   }
 
-  likePost(userId, postID) {
-    return axios.post(API_URL + `post/like?userId=${userId}&postId=${postID}`, {
+  async likePost(userId, postID) {
+    var config = {
+      method: "post",
+      url: API_URL + `post/like?userId=${userId}&postId=${postID}`,
       headers: authHeader(),
-    });
+    };
+    return await axios(config);
   }
   async getUser(userId) {
     const response = await axios.get(API_URL + `user?userId=${userId}`, {
@@ -60,9 +63,9 @@ class UserService {
     return response.data.data;
   }
 
-  async getComment(postID, size) {
+  async getComment(postID, page) {
     const res = await axios.get(
-      API_URL + `comment/post?postId=${postID}&page=0&size=${size}`,
+      API_URL + `comment/post?postId=${postID}&page=${page}&size=2`,
       {
         headers: authHeader(),
       }
@@ -91,10 +94,10 @@ class UserService {
     });
   }
 
-  updateUser(id, firstName, lastName, bio, address, birthday) {
+  updateUser(id, firstName, lastName, bio, address, birthDay) {
     return axios.put(
       API_URL + "user",
-      {id, firstName, lastName, bio, address, birthday},
+      {id, firstName, lastName, bio, address, birthDay},
       {headers: authHeader()}
     );
   }
@@ -142,10 +145,15 @@ class UserService {
     return res;
   }
 
-  getMessage(userID, receiverID, page) {
+  getFollowing(userID) {
+    const res = axios.get(API_URL + `user/following?userId=${userID}`, {
+      headers: authHeader(),
+    });
+    return res;
+  }
+  getConversation(userID) {
     const res = axios.get(
-      API_URL +
-        `message?senderId=${userID}&receiverId=${receiverID}&page=${page}&size=10`,
+      API_URL + `message/conversations?userId=${userID}&page=0&size=10`,
       {
         headers: authHeader(),
       }

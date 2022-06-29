@@ -11,6 +11,8 @@ import {toast} from "react-toastify";
 import {over} from "stompjs";
 import SockJS from "sockjs-client";
 import "react-toastify/dist/ReactToastify.css";
+import Topten from "../../components/timeline/Topten";
+import SkeletonPost from "../../components/timeline/SkeletonPost";
 var stompClient = null;
 
 const TimeLine = () => {
@@ -23,7 +25,7 @@ const TimeLine = () => {
   const [avatar, setAvatar] = useState();
 
   const connect = () => {
-    let Sock = new SockJS("http://localhost:8080/ws");
+    let Sock = new SockJS("https://socialnetwork999.herokuapp.com/ws");
     stompClient = over(Sock);
     stompClient.connect({}, onConnected);
   };
@@ -124,10 +126,10 @@ const TimeLine = () => {
                 dataLength={posts.length} //This is important field to render the next data
                 next={fetchData}
                 hasMore={hasMore}
-                loader={<h4 className=" text-center mt-2">Loading...</h4>}
+                loader={<SkeletonPost posts={2} />}
                 endMessage={
-                  <p style={{textAlign: "center", marginBottom: "16px"}}>
-                    <b>Yay! You have seen it all</b>
+                  <p className="bg-white rounded py-2 text-center mb-4">
+                    <b>You have seen all post</b>
                   </p>
                 }
               >
@@ -137,7 +139,10 @@ const TimeLine = () => {
               </InfiniteScroll>
             </div>
             <div className="w-footerWidth ">
-              <Footer />
+              <div className="fixed w-footerWidth">
+                <Topten />
+                <Footer />
+              </div>
             </div>
           </div>
         </div>

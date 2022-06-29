@@ -3,7 +3,6 @@ import {AiOutlineHeart, AiFillHeart} from "react-icons/ai";
 import {FaRegComment, FaRegShareSquare, FaRegFlag} from "react-icons/fa";
 import {format} from "timeago.js";
 import userService from "../../Services/user.service";
-import Carousel from "./Carousel";
 import CommentBox from "./CommentBox";
 import CommentLoad from "./CommentLoad";
 import Report from "./Report";
@@ -11,13 +10,15 @@ import Share from "./Share";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {Link} from "react-router-dom";
 import PostShare from "./PostShare";
+import CarouselPost from "./CarouselPost";
 
 const Post = ({postData, stompClient}) => {
   const [like, setLike] = useState(postData.countLiked);
   const [isLike, setIsLike] = useState(postData.liked);
   const [showReport, setShowReport] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [sizeCmt, setSizeCmt] = useState(2);
+  const [hasMoreCmt, setHasMoreCmt] = useState(true);
+  const [page, setPageCmt] = useState(0);
   const [cmts, setCmts] = useState([]);
   const [load, setLoad] = useState(false);
   const [reload, setReload] = useState(false);
@@ -39,10 +40,14 @@ const Post = ({postData, stompClient}) => {
 
   const fetchDataComment = async () => {
     await userService
-      .getComment(postData.id, sizeCmt)
+      .getComment(postData.id, page)
       .then((res) => {
-        setCmts(res);
+        setCmts([...cmts, ...res]);
         setReload(false);
+        setPageCmt(page + 1);
+        if (res.length < 2) {
+          setHasMoreCmt(false);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -58,27 +63,31 @@ const Post = ({postData, stompClient}) => {
       setLoad(true);
     }
   }, [cmts]);
-
-  const setLikeApi = async () => {
-    await userService
-      .likePost(Id, postData.id)
-      .then((res) => {
-        console.log(res);
-        if (res.data.data !== null) {
-          stompClient.send(
-            `/app/sendNotification`,
-            {},
-            JSON.stringify(res.data.data)
-          );
-        }
+  // ////////////////////////////////////////
+  const setLikeApi = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    fetch(
+      `https://socialnetwork999.herokuapp.com/api/post/like?userId=${Id}&postId=${postData.id}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        const payload = JSON.parse(result).data;
+        stompClient.send(
+          `/app/sendNotification`,
+          {},
+          JSON.stringify(payload.notificationPayload)
+        );
+        setReload(true);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => console.log("error", error));
   };
-
-  useEffect(() => {
-    fetchDataComment();
-  }, []);
-
   return (
     <>
       <div className="bg-white flex flex-col py-2 rounded gap-[4px] mb-6 ">
@@ -114,7 +123,9 @@ const Post = ({postData, stompClient}) => {
         </div>
 
         <div className="post-image flex justify-center rounded ">
-          <Carousel imageUrl={postData.urlImage} />
+          {postData.images[0] !== undefined ? (
+            <CarouselPost images={postData.images} />
+          ) : null}
         </div>
         <div className="post-share flex justify-center rounded">
           {postData.postShared != null ? (
@@ -171,11 +182,11 @@ const Post = ({postData, stompClient}) => {
                 <CommentLoad key={index} cmtData={cmt} />
               ))
             : null}
-          {load ? (
+
+          {hasMoreCmt ? (
             <div className="count-react mb-2">
               <button
                 onClick={() => {
-                  setSizeCmt(sizeCmt + 4);
                   fetchDataComment();
                 }}
                 className=" font-semibold text-sm hover:cursor-pointer hover:underline text-primaryblue"
@@ -189,9 +200,9 @@ const Post = ({postData, stompClient}) => {
             stompClient={stompClient}
             userID={Id}
             postID={postData.id}
-            setSizeCmt={setSizeCmt}
-            sizeCmt={sizeCmt}
             setReload={setReload}
+            setCmts={setCmts}
+            cmts={cmts}
           />
         </div>
       </div>

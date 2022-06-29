@@ -1,16 +1,40 @@
-import {useState} from "react";
+import {useState, useRef} from "react";
 import {useFormik} from "formik";
-import {Redirect, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import * as Yup from "yup";
 import {AiOutlineGoogle} from "react-icons/ai";
 import {FaFacebookF} from "react-icons/fa";
 import Recovery from "../recovery/Recovery";
 import Signup from "../signup/Signup";
 import {toast} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 const Signin = () => {
   let navigate = useNavigate();
   const [succes, setSuccess] = useState(true);
+
+  const toastId = useRef(null);
+  const notify = () => {
+    toastId.current = toast.loading("Login in progress, please wait...", {
+      autoClose: false,
+      theme: "dark",
+    });
+  };
+
+  const updateNoti = () =>
+    toast.update(toastId.current, {
+      render: "Login Success",
+      autoClose: 3000,
+      isLoading: false,
+      theme: "dark",
+    });
+  const updateFailedNoti = (mess) =>
+    toast.update(toastId.current, {
+      render: mess,
+      autoClose: 3000,
+      isLoading: false,
+      theme: "dark",
+      type: "error",
+    });
+
   const formik = useFormik({
     initialValues: {
       emailSi: "",
@@ -34,34 +58,29 @@ const Signin = () => {
       var formdata = new FormData();
       formdata.append("email", values.emailSi);
       formdata.append("password", values.passwordSi);
-
+      notify();
       var requestOptions = {
         method: "POST",
         body: formdata,
         redirect: "follow",
       };
 
-      fetch("http://localhost:8080/api/login", requestOptions)
+      fetch("https://socialnetwork999.herokuapp.com/api/login", requestOptions)
         .then((response) => response.text())
         .then((result) => {
+          updateNoti();
           if (result !== "") {
-            toast("Login success!", {
-              position: "bottom-center",
-              autoClose: 3000,
-              theme: "dark",
-            });
             localStorage.setItem("user", result);
             navigate("/");
           } else {
             setSuccess(false);
-            toast.error("Your email or password is incorect!", {
-              position: "bottom-center",
-              autoClose: 3000,
-              theme: "dark",
-            });
+            updateFailedNoti("Your email or password is not correct!");
           }
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => {
+          updateFailedNoti();
+          console.log(error);
+        });
     },
   });
 

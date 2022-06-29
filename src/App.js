@@ -1,17 +1,21 @@
 import "./App.css";
 import MyRoutes from "./Routes/index";
+import {SkeletonTheme} from "react-loading-skeleton";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
-      <MyRoutes />
+      <SkeletonTheme>
+        <MyRoutes />
+      </SkeletonTheme>
+
       <ToastContainer
         pauseOnHover={false}
         position="bottom-center"
         newestOnTop={true}
         limit={3}
-        style={{width: "400px", fontSize: "12px"}}
+        style={{width: "350px", fontSize: "12px"}}
       />
     </>
   );

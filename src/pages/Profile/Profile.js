@@ -5,6 +5,8 @@ import Navbar from "../../components/navbar/Navbar";
 import userService from "../../Services/user.service";
 import InfiniteScroll from "react-infinite-scroll-component";
 import avatarDefault from "../../Resource/Image/avatar.png";
+import SkeletonPost from "../../components/timeline/SkeletonPost";
+import SkeletonUser from "../../components/user/SkeletonUser";
 
 const Profile = () => {
   const [posts, setPosts] = useState([]);
@@ -67,10 +69,10 @@ const Profile = () => {
                 dataLength={posts.length} //This is important field to render the next data
                 next={fetchData}
                 hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
+                loader={<SkeletonPost posts={3} />}
                 endMessage={
-                  <p style={{textAlign: "center ", marginBottom: "16px"}}>
-                    <b>Yay! You have seen it all</b>
+                  <p className="bg-white rounded py-2 text-center mb-4">
+                    <b>You have seen all post</b>
                   </p>
                 }
               >
@@ -80,7 +82,11 @@ const Profile = () => {
               </InfiniteScroll>
             </div>
             <div className="w-footerWidth">
-              {user !== null ? <ProfileUser userData={user} /> : null}
+              {user !== null ? (
+                <ProfileUser userData={user} />
+              ) : (
+                <SkeletonUser />
+              )}
             </div>
           </div>
         </div>

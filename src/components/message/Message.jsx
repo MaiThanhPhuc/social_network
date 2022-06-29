@@ -3,11 +3,11 @@ import {BiDotsVerticalRounded} from "react-icons/bi";
 import {format} from "timeago.js";
 import avatarDefault from "../../Resource/Image/avatar.png";
 
-const Message = ({data}) => {
+const Message = ({data, avatarGuest}) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showTime, setShowTime] = useState(false);
   const [showRemove, setShowRemove] = useState(false);
-  const handleButtonClick = () => {
+  const handleDeleteMessage = () => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${user.access_token}`);
     var requestOptions = {
@@ -16,7 +16,10 @@ const Message = ({data}) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:8080/api/message/${data.id}`, requestOptions)
+    fetch(
+      `https://socialnetwork999.herokuapp.com/api/message/${data.id}`,
+      requestOptions
+    )
       .then(() => {
         setShowRemove(true);
       })
@@ -25,7 +28,6 @@ const Message = ({data}) => {
   const handleShowTime = () => {
     setShowTime(showTime ? false : true);
   };
-  // console.log(data.receiverAvatar);
   return (
     <>
       {showRemove ? (
@@ -52,7 +54,7 @@ const Message = ({data}) => {
               >
                 <li>
                   <a
-                    onClick={handleButtonClick}
+                    onClick={handleDeleteMessage}
                     className="text-black active:bg-black/30 font-semibold p-1"
                   >
                     Remove
@@ -79,17 +81,15 @@ const Message = ({data}) => {
       {user.userId != data.senderId ? (
         <div className="">
           <div className="flex w-[50%] items-center cursor-pointer">
-            <button className="avatar mr-2">
+            <div className="avatar mr-2">
               <div className="w-9 rounded-full">
                 <img
-                  src={
-                    data.receiverAvatar != null
-                      ? data.receiverAvatar
-                      : avatarDefault
-                  }
+                  src={avatarGuest !== null ? avatarGuest : avatarDefault}
+                  alt="reveiver"
                 />
+                <img src={avatarGuest} />
               </div>
-            </button>
+            </div>
             <div
               onClick={handleShowTime}
               className=" bg-grayLight px-4 py-2 rounded-[22px] break-words  w-fit text-black text-[15px]"

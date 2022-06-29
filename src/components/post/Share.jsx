@@ -51,7 +51,10 @@ const Share = ({postData, stompClient, setShowShareModal}) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:8080/api/postshare", requestOptions)
+    fetch(
+      "https://socialnetwork999.herokuapp.com/api/postshare",
+      requestOptions
+    )
       .then((response) => response.text())
       .then((result) => {
         updateNoti();

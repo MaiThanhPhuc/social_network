@@ -44,7 +44,10 @@ const Change_Password = () => {
         redirect: "follow",
       };
 
-      fetch("http://localhost:8080/api/changePassword", requestOptions)
+      fetch(
+        "https://socialnetwork999.herokuapp.com/api/changePassword",
+        requestOptions
+      )
         .then((response) => response.text())
         .then((result) => {
           console.log(result);

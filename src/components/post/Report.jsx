@@ -27,7 +27,10 @@ const Report = ({postID, setShowReport}) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:8080/api/report/post/${postID}`, requestOptions)
+    fetch(
+      `https://socialnetwork999.herokuapp.com/api/report/post/${postID}`,
+      requestOptions
+    )
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));

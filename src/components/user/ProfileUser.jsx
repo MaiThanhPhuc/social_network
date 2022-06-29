@@ -1,6 +1,7 @@
 import {AiOutlineEdit} from "react-icons/ai";
 import {Link} from "react-router-dom";
 import avatarDefault from "../../Resource/Image/avatar.png";
+import {BsPerson} from "react-icons/bs";
 
 const ProfileUser = ({userData}) => {
   return (
@@ -54,6 +55,22 @@ const ProfileUser = ({userData}) => {
             <span className="content-info text-grayText font-medium text-sm w-2/3 text-right">
               {userData.bio}
             </span>
+          </div>
+          <div className="flex gap-9">
+            <div className="flex py-2 px-2  rounded-lg text-black items-center ">
+              <h3 className="label-info font-semibold  text-sm">Follower:</h3>
+              <span className=" font-medium text-sm mx-1 ">
+                {userData.countFollower}
+              </span>
+              <BsPerson />
+            </div>
+            <div className="flex py-2 px-2  rounded-lg text-black items-center ">
+              <h3 className="label-info font-semibold text-sm">Following:</h3>
+              <span className=" font-medium mx-1  text-sm">
+                {userData.countFollowing}
+              </span>
+              <BsPerson />
+            </div>
           </div>
         </div>
         <Link

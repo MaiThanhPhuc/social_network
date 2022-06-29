@@ -1,4 +1,4 @@
-import React from "react";
+import {useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {useFormik} from "formik";
 import * as Yup from "yup";
@@ -7,6 +7,30 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const Signup = () => {
   let navigate = useNavigate();
+
+  const toastId = useRef(null);
+  const notify = () => {
+    toastId.current = toast.loading("Register in progress, please wait...", {
+      autoClose: false,
+      theme: "dark",
+    });
+  };
+
+  const updateNoti = () =>
+    toast.update(toastId.current, {
+      render: "Register success 🎉🎉🎉",
+      autoClose: 3000,
+      isLoading: false,
+      theme: "dark",
+    });
+
+  const updateFailedNoti = (mess) =>
+    toast.update(toastId.current, {
+      render: mess,
+      autoClose: 3000,
+      isLoading: false,
+      theme: "dark",
+    });
 
   const formik = useFormik({
     initialValues: {
@@ -41,7 +65,8 @@ const Signup = () => {
         .oneOf([Yup.ref("password"), null], "Password must match"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      notify();
+
       authService
         .register(
           values.fname,
@@ -53,22 +78,15 @@ const Signup = () => {
         )
         .then((result) => {
           console.log(result.data);
-          if (result.status === 200) {
-            toast("Congratulation 🎉🎉! Please login", {
-              position: "bottom-center",
-              autoClose: 3000,
-              theme: "dark",
-            });
+          if (result.data.status) {
+            updateNoti();
+          } else {
+            updateFailedNoti(result.data.message);
           }
-          formik.resetForm();
         })
         .catch((error) => {
           console.log(error);
-          toast.error("Please try again 😫😫!", {
-            position: "bottom-center",
-            autoClose: 3000,
-            theme: "dark",
-          });
+          updateFailedNoti(error.message);
         });
     },
   });

@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
     <>
-      <div className="bg-white flex flex-col gap-2  p-6 rounded text-sm fixed">
+      <div className="bg-white flex flex-col gap-2  p-6 rounded text-sm ">
         <a href="#/" className="link link-hover w-full">
           Help
         </a>

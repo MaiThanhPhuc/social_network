@@ -4,14 +4,20 @@ import {MdOutlineReportProblem} from "react-icons/md";
 import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import {BsPerson} from "react-icons/bs";
 const ProfileGuest = ({stompClient, userData}) => {
   const [follow, setFollow] = useState(userData.follow);
+  const [follower, setFollower] = useState(userData.countFollower);
   const temp = JSON.parse(localStorage.getItem("user"));
   const Id = temp.userId;
   const handleFollow = () => {
-    setFollow(follow ? false : true);
-
+    if (follow) {
+      setFollow(false);
+      setFollower(follower - 1);
+    } else {
+      setFollow(true);
+      setFollower(follower + 1);
+    }
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${temp.access_token}`);
 
@@ -22,7 +28,7 @@ const ProfileGuest = ({stompClient, userData}) => {
     };
 
     fetch(
-      `http://localhost:8080/api/user/follow?userId=${Id}&userFollowedId=${userData.id}`,
+      `https://socialnetwork999.herokuapp.com/api/user/follow?userId=${Id}&userFollowedId=${userData.id}`,
       requestOptions
     )
       .then((response) => response.text())
@@ -39,21 +45,30 @@ const ProfileGuest = ({stompClient, userData}) => {
   };
 
   const handleReportUser = () => {
-    userService
-      .reportUser(userData.id)
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success(
-            "Your feedback is important in helping us keep the us community safe",
-            {
-              position: "bottom-center",
-              autoClose: 3000,
-              theme: "dark",
-            }
-          );
-        }
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${temp.access_token}`);
+
+    var requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://socialnetwork999.herokuapp.com/api/report/user/${userData.id}`,
+      requestOptions
+    )
+      .then(() => {
+        toast.success(
+          "Your feedback is important in helping us keep the us community safe",
+          {
+            position: "bottom-center",
+            autoClose: 3000,
+            theme: "dark",
+          }
+        );
       })
-      .catch((err) => console.log(err));
+      .catch((error) => console.log("error", error));
   };
 
   return (
@@ -109,7 +124,22 @@ const ProfileGuest = ({stompClient, userData}) => {
             </span>
           </div>
         </div>
-        <div className=" w-5/6 flex justify-evenly  ">
+        <div className="flex gap-9">
+          <div className="flex py-2 px-2  rounded-lg text-black items-center ">
+            <h3 className="label-info font-semibold  text-sm">Follower:</h3>
+            <span className=" font-medium text-sm mx-1 ">{follower}</span>
+            <BsPerson />
+          </div>
+          <div className="flex py-2 px-2  rounded-lg text-black items-center ">
+            <h3 className="label-info font-semibold text-sm">Following:</h3>
+            <span className=" font-medium mx-1  text-sm">
+              {userData.countFollowing}
+            </span>
+            <BsPerson />
+          </div>
+        </div>
+
+        <div className=" w-5/6 flex justify-evenly items-center  ">
           {follow ? (
             <button
               onClick={handleFollow}
@@ -128,12 +158,39 @@ const ProfileGuest = ({stompClient, userData}) => {
           <button className=" w-2/5 bg-primaryblue hover:bg-primaryblue/80  rounded px-2 py-[6px] text-[13px] font-semibold text-white">
             Chat
           </button>
-          <button
-            onClick={() => handleReportUser()}
-            className="hover:bg-primaryblue/8 rounded-full text-[13px] font-semibold text-black"
+          <a
+            href="#my-modal"
+            className="hover:bg-grayLight p-1 rounded-full text-[13px] cursor-pointer font-semibold text-black"
           >
             <MdOutlineReportProblem size={22} />
-          </button>
+          </a>
+        </div>
+      </div>
+      {/* modal */}
+      <div class="modal" id="my-modal">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">
+            Does this go against our Community Standards?
+          </h3>
+          <p class="py-3">
+            Our standards explain what we do and don't allow on here. We review
+            and update our standards regularly, with the help of experts.
+          </p>
+          <div class="modal-action">
+            <a
+              href="#"
+              class="py-2 px-3 hover:bg-grayLight border border-black/70 text-sm rounded-lg font-medium"
+            >
+              Cancle
+            </a>
+            <a
+              href="#"
+              onClick={handleReportUser}
+              class=" cursor-pointer py-2 px-3 hover:bg-primaryblue/80 bg-primaryblue text-white text-sm rounded-lg font-medium"
+            >
+              Report
+            </a>
+          </div>
         </div>
       </div>
     </>

@@ -11,7 +11,7 @@ const Recovery = () => {
   const toastId = useRef(null);
 
   const notify = () =>
-    (toastId.current = toast(
+    (toastId.current = toast.loading(
       "Verify email address in progress, please wait...",
       {
         autoClose: false,
@@ -23,6 +23,7 @@ const Recovery = () => {
     toast.update(toastId.current, {
       render: "Your email address is not found",
       autoClose: 3000,
+      isLoading: false,
       theme: "dark",
     });
   const handleSendCode = () => {
@@ -74,7 +75,10 @@ const Recovery = () => {
         redirect: "follow",
       };
 
-      fetch("http://localhost:8080/api/savePassword", requestOptions)
+      fetch(
+        "https://socialnetwork999.herokuapp.com/api/savePassword",
+        requestOptions
+      )
         .then((response) => response.text())
         .then(() => {
           toast("Reset password success", {

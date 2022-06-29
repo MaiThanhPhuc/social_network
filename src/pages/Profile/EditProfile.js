@@ -79,10 +79,9 @@ const EditProfile = () => {
                   <div className="menu-edit-user col-span-2 border-r border-black/20  ">
                     <ul className=" space-y-2 w-full">
                       {sidebarItems.map((item, index) => (
-                        <li>
+                        <li key={index}>
                           <Link
                             to={item.to}
-                            key={index}
                             className={`pl-7 py-4 block hover:bg-grayLight/50 border-l-2 hover:border-black/20 ${
                               activeIndex === index
                                 ? "boder-black bg-grayLight font-semibold"

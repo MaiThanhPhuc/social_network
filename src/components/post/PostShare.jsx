@@ -5,7 +5,7 @@ import {format} from "timeago.js";
 const PostShare = ({postData}) => {
   return (
     <>
-      <div className="top-post mx-4 rounded pb-2 border border-black/20 ">
+      <div className="top-post w-postWidth mx-4 rounded pb-2 border border-black/20 ">
         <Carousel imageUrl={postData.postShared.imgUrl} />
         <div className="heading-avatar flex items-center mt-2">
           <div className="box-left flex flex-col ml-2 ">

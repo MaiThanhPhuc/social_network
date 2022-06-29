@@ -30,7 +30,10 @@ const Edit_Profile = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:8080/api/user/upimg", requestOptions)
+    fetch(
+      "https://socialnetwork999.herokuapp.com/api/user/upimg",
+      requestOptions
+    )
       .then(() => {
         updateNoti();
         localStorage.setItem("userImgUrl", avatar);
@@ -60,7 +63,7 @@ const Edit_Profile = () => {
     initialValues: {
       fname: userData.firstName,
       lname: userData.lastName,
-      birthday: userData.birthDay,
+      birth: userData.birthDay,
       address: userData.address,
       bio: userData.bio,
     },
@@ -72,7 +75,7 @@ const Edit_Profile = () => {
           values.lname,
           values.bio,
           values.address,
-          values.birthday
+          values.birth
         )
         .then((res) => {
           if (res.status === 200) {
@@ -162,19 +165,16 @@ const Edit_Profile = () => {
               />
             </div>
             <div className="items-edit-user-from flex ">
-              <label
-                htmlFor="birthday"
-                className="font-semibold text-right w-1/4"
-              >
+              <label htmlFor="birth" className="font-semibold text-right w-1/4">
                 Birthday
               </label>
               <input
                 type="date"
-                name="birthday"
-                value={formik.values.birthday}
+                name="birth"
+                value={formik.values.birth}
                 onChange={formik.handleChange}
                 className="pl-2 py-1 text-sm border border-black/20 rounded w-2/4 ml-8"
-                id="birthday"
+                id="birth"
               />
             </div>
             <div className="items-edit-user-bio flex ">
@@ -215,7 +215,7 @@ const Edit_Profile = () => {
                 Update profile picture
               </h3>
               <div className="border-b border-black/20 w-full "></div>
-              <div className="rounded-full my-4">
+              <div className="rounded-full my-4 relative group ">
                 <label htmlFor="media">
                   <img
                     src={avatar}
@@ -227,10 +227,13 @@ const Edit_Profile = () => {
                     id="media"
                     name="media"
                     accept="image/*"
-                    className="py-2"
+                    className="mt-4 hidden "
                     onChange={handlePreviewImages}
                   />
                 </label>
+                <div class="opacity-0 group-hover:opacity-100 duration-300 absolute inset-x-0 bottom-0 flex justify-center items-center text-base text-black bg-white/70 font-semibold h-[40px]">
+                  Select image
+                </div>
               </div>
               <div className="flex w-full justify-end">
                 <button

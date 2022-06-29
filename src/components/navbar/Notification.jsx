@@ -5,7 +5,7 @@ const Notification = ({data}) => {
   return (
     <>
       <div className="cursor-pointer ">
-        <div className="flex w-full bg-white border-b-[1px] border-gray py-1 px-3 hover:bg-black/10">
+        <div className="flex w-full bg-white border-b-[1px] border-gray py-1 px-3 items-center hover:bg-black/10">
           <div className="w-14 flex flex-col">
             <div className="flex items-center">
               <button className="avatar">
@@ -24,7 +24,7 @@ const Notification = ({data}) => {
           </div>
           <div className="w-full flex flex-col ">
             <span className=" text-sm text-bodytxt">{data.content}</span>
-            <span className=" text-sm text-bodytxt">
+            <span className=" text-xs text-bodytxt">
               {format(data.createTime)}
             </span>
           </div>

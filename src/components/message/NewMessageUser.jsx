@@ -1,7 +1,7 @@
 import avatarDefault from "../../Resource/Image/avatar.png";
 
-const UserItems = ({
-  dataConversation,
+const NewMessageUser = ({
+  userData,
   setReceiverID,
   handleResetConversation,
   setGuestName,
@@ -9,34 +9,32 @@ const UserItems = ({
 }) => {
   const handleLoadConversation = () => {
     handleResetConversation();
-    setAvatarGuest(dataConversation.avatar);
-    setGuestName(dataConversation.lastName + " " + dataConversation.firstName);
-    setReceiverID(dataConversation.id);
+    setAvatarGuest(userData.imageUrl);
+    setGuestName(userData.lastName + " " + userData.firstName);
+    setReceiverID(userData.id);
   };
   return (
     <>
-      {dataConversation !== undefined ? (
+      {userData !== undefined ? (
         <div
           onClick={handleLoadConversation}
-          className="user-items focus:bg-grayLight cursor-pointer flex items-center hover:bg-grayLight rounded px-4 py-2"
+          className="user-items cursor-pointer flex items-center hover:bg-grayLight rounded px-4 py-2"
         >
           <button className="avatar">
             <div className="w-12 rounded-full">
               <img
                 src={
-                  dataConversation.avatar != null
-                    ? dataConversation.avatar
-                    : avatarDefault
+                  userData.imageUrl != null ? userData.imageUrl : avatarDefault
                 }
               />
             </div>
           </button>
           <div className="box-left flex flex-col ml-2">
             <a className="user-name text-black font-semibold ">
-              {dataConversation.lastName + " " + dataConversation.firstName}
+              {userData.lastName + " " + userData.firstName}
             </a>
             <span className="text-grayText text-xs font-semibold">
-              {dataConversation.email}
+              {userData.email}
             </span>
           </div>
         </div>
@@ -45,4 +43,4 @@ const UserItems = ({
   );
 };
 
-export default UserItems;
+export default NewMessageUser;

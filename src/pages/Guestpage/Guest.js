@@ -9,6 +9,9 @@ import {useParams} from "react-router-dom";
 import {toast} from "react-toastify";
 import {over} from "stompjs";
 import SockJS from "sockjs-client";
+import SkeletonPost from "../../components/timeline/SkeletonPost";
+import SkeletonUser from "../../components/user/SkeletonUser";
+
 var stompClient = null;
 
 const Guest = () => {
@@ -23,7 +26,7 @@ const Guest = () => {
   let guestID = params.userID;
 
   const connect = () => {
-    let Sock = new SockJS("http://localhost:8080/ws");
+    let Sock = new SockJS("https://socialnetwork999.herokuapp.com/ws");
     stompClient = over(Sock);
     stompClient.connect({}, onConnected);
   };
@@ -44,7 +47,6 @@ const Guest = () => {
   };
 
   useEffect(() => {
-    console.log(posts);
     fetchUserApi();
     fetchData();
     connect();
@@ -96,10 +98,10 @@ const Guest = () => {
                 dataLength={posts.length} //This is important field to render the next data
                 next={fetchData}
                 hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
+                loader={<SkeletonPost posts={4} />}
                 endMessage={
-                  <p style={{textAlign: "center", marginBottom: "16px"}}>
-                    <b>Yay! You have seen it all</b>
+                  <p className="bg-white rounded py-2 text-center mb-4">
+                    <b>You have seen all post</b>
                   </p>
                 }
               >
@@ -111,7 +113,9 @@ const Guest = () => {
             <div className="w-footerWidth">
               {user !== null ? (
                 <ProfileGuest stompClient={stompClient} userData={user} />
-              ) : null}
+              ) : (
+                <SkeletonUser />
+              )}
             </div>
           </div>
         </div>

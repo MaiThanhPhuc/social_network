@@ -19,7 +19,7 @@ const FollowerUser = () => {
     };
 
     fetch(
-      `http://localhost:8080/api/user/follow?userId=${userRemoveID}&userFollowedId=${Id}`,
+      `https://socialnetwork999.herokuapp.com/api/user/follow?userId=${userRemoveID}&userFollowedId=${Id}`,
       requestOptions
     )
       .then((response) => response.text())

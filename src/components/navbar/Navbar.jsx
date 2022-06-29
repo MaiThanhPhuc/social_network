@@ -12,6 +12,7 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Account from "./Account";
 import Notification from "./Notification";
+import SkeletonSeach from "./SkeletonSeach";
 const Navbar = ({Avatar}) => {
   const [noti, setNoti] = useState(true);
   const [notiData, setNotiData] = useState([]);
@@ -67,7 +68,7 @@ const Navbar = ({Avatar}) => {
     };
 
     fetch(
-      `http://localhost:8080/api/notification/setSeen?notificationId=${notiData[0].id}`,
+      `https://socialnetwork999.herokuapp.com/api/notification/setSeen?notificationId=${notiData[0].id}`,
       requestOptions
     )
       .then(() => setNoti(true))
@@ -118,11 +119,13 @@ const Navbar = ({Avatar}) => {
           {searchValue !== "" ? (
             <div className="absolute shadow bg-grayLight z-40 w-full top-[40px] lef-0 rounded max-h-[400px] overflow-y-auto ">
               <div className=" flex flex-col w-full">
-                {searchResult !== null
-                  ? searchResult.map((res, index) => (
-                      <Account key={index} data={res} />
-                    ))
-                  : null}
+                {searchResult !== null ? (
+                  searchResult.map((res, index) => (
+                    <Account key={index} data={res} />
+                  ))
+                ) : (
+                  <SkeletonSeach users={4} />
+                )}
               </div>
             </div>
           ) : null}
@@ -154,14 +157,14 @@ const Navbar = ({Avatar}) => {
             </label>
             <ul
               tabIndex="0"
-              className="dropdown-content shadow-lg border border-black/10 bg-base-100 rounded w-[300px]"
+              className="dropdown-content shadow-lg border border-black/10 bg-base-100 rounded w-[300px] p-1"
             >
               <InfiniteScroll
                 dataLength={notiData.length} //This is important field to render the next data
                 next={fetchData}
                 hasMore={hasMore}
                 height={250}
-                loader={<h4 className=" text-center mt-2">Loading...</h4>}
+                loader={<SkeletonSeach users={4} />}
                 endMessage={
                   <p className="text-center py-1 text-black/40 text-sm font-semibold">
                     No more notification

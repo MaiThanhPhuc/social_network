@@ -7,9 +7,9 @@ const Commentbox = ({
   stompClient,
   userID,
   postID,
-  setSizeCmt,
-  sizeCmt,
   setReload,
+  setCmts,
+  cmts,
 }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user.access_token;
@@ -37,26 +37,30 @@ const Commentbox = ({
       redirect: "follow",
     };
 
-    fetch("http://localhost:8080/api/comment", requestOptions)
+    fetch("https://socialnetwork999.herokuapp.com/api/comment", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result).data;
-        console.log(payload);
+        setCmts([{...payload}, ...cmts]);
         stompClient.send(
           `/app/sendNotification`,
           {},
           JSON.stringify(payload.notificationPayload)
         );
-        setReload(true);
+        // setReload(true);
       })
       .catch((error) => console.log("error", error));
   };
 
   const handleCmt = (e) => {
     e.preventDefault();
-    postComment();
-    setCmt("");
-    setSizeCmt(sizeCmt + 1);
+
+    if (cmt.trim() !== "") {
+      postComment();
+      setCmt("");
+    } else {
+      setCmt("");
+    }
   };
   return (
     <>
@@ -66,7 +70,10 @@ const Commentbox = ({
             <button>
               <BsEmojiSmile
                 className="emoji-icon w-7 h-7 p-1 hover:bg-black/10 rounded-full"
-                onClick={() => setShowPicker((val) => !val)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPicker((val) => !val);
+                }}
               />
             </button>
             {showPicker ? (

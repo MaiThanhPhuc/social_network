@@ -4,34 +4,43 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./styles.css";
+import {BsTrash} from "react-icons/bs";
 import {Keyboard, Pagination, Navigation} from "swiper";
-const Carousel = ({imageUrl}) => {
+const Carousel = ({imageUrls, setImages, files, setFiles}) => {
   return (
     <>
-      {imageUrl !== null ? (
-        <div className="w-imagePostWidth h-imagePostHeight rounded">
-          <Swiper
-            slidesPerView={1}
-            spaceBetween={30}
-            keyboard={{
-              enabled: true,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            navigation={true}
-            modules={[Keyboard, Pagination, Navigation]}
-            className="mySwiper"
-          >
-            <SwiperSlide className="rounded">
-              <img
-                src={imageUrl}
-                alt="anh"
-                className="rounded w-imagePostWidth h-imagePostHeight object-cover"
-              />
+      {imageUrls !== undefined ? (
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={30}
+          keyboard={{
+            enabled: true,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          modules={[Keyboard, Pagination, Navigation]}
+          className="mySwiper rounded"
+        >
+          {imageUrls.map((img, index) => (
+            <SwiperSlide key={index}>
+              <div
+                onClick={() => {
+                  setImages(imageUrls.filter((tmp) => tmp !== img));
+                  const fileArray = Array.from(files).filter(
+                    (file) => file !== files[index]
+                  );
+                  setFiles(fileArray);
+                }}
+                className=" cursor-pointer p-2 absolute top-0 right-0 bg-red/100 rounded"
+              >
+                <BsTrash />
+              </div>
+              <img src={img} alt="anh" className="rounded" />
             </SwiperSlide>
-          </Swiper>
-        </div>
+          ))}
+        </Swiper>
       ) : null}
     </>
   );
