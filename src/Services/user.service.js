@@ -162,7 +162,7 @@ class UserService {
 
   async getPostID(userID, postID) {
     const response = await axios.get(
-      API_URL + `post/2?postId=${postID}&userId=${userID}`,
+      API_URL + `post/?postId=${postID}&userId=${userID}`,
       {
         headers: authHeader(),
       }

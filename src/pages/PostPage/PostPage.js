@@ -23,7 +23,6 @@ const PostPage = () => {
         console.log(err);
       });
   };
-  console.log(dataPost);
   useEffect(() => {
     fetchUserApi();
     fetchPostData();

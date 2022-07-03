@@ -78,6 +78,7 @@ const ProfileGuest = ({stompClient, userData}) => {
           <div className="avatar ">
             <div className="w-UserAvatar rounded-full hover:cursor-pointer">
               <img
+                alt="anh"
                 src={
                   userData.imageUrl !== null ? userData.imageUrl : avatarDefault
                 }
@@ -150,14 +151,14 @@ const ProfileGuest = ({stompClient, userData}) => {
           ) : (
             <button
               onClick={handleFollow}
-              className=" w-2/5 bg-primaryblue hover:bg-primaryblue/80  rounded px-2 py-[6px] text-[13px] font-semibold text-white "
+              className=" w-2/5 bg-primaryblue hover:bg-primaryblue/80 text-center rounded px-2 py-[6px] text-[13px] font-semibold text-white "
             >
               Follow
             </button>
           )}
           <Link
             to={`/inbox/${userData.id}`}
-            className=" w-2/5 bg-primaryblue hover:bg-primaryblue/80  rounded px-2 py-[6px] text-[13px] font-semibold text-white"
+            className=" w-2/5 bg-primaryblue text-center hover:bg-primaryblue/80 rounded px-2 py-[6px] text-[13px] font-semibold text-white"
           >
             Chat
           </Link>

@@ -74,6 +74,7 @@ const MessageBox = () => {
 
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
+    console.log(payloadData);
     setMessageReceive(payloadData);
   };
 

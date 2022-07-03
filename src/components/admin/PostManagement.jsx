@@ -103,16 +103,15 @@ const PostManagement = () => {
     },
     {
       name: "Image",
+      maxWidth: "100px",
       cell: (row) =>
         row.post.images.map((temp) => (
           <img
             key={temp.imgPostId}
             src={temp.urlImage}
-            className="w-9 h-9 object-contain"
+            className="w-9 h-9 object-contain overflow-auto"
           />
         )),
-      sortable: true,
-      maxWidth: "600px",
     },
 
     {

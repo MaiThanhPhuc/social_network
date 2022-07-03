@@ -79,11 +79,11 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
     )
       .then((response) => response.text())
       .then((result) => {
-        const payload = JSON.parse(result).data;
+        const payload = JSON.parse(result);
         stompClient.send(
           `/app/sendNotification`,
           {},
-          JSON.stringify(payload.notificationPayload)
+          JSON.stringify(payload.data)
         );
         setReload(true);
       })
@@ -131,7 +131,7 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
               </button>
               <div className="box-left flex flex-col ml-2 ">
                 <Link
-                  to={`user/${postData.userCreate.id}`}
+                  to={`/user/${postData.userCreate.id}`}
                   className="user-name text-black font-semibold cursor-pointer"
                 >
                   {postData.userCreate.firstName}

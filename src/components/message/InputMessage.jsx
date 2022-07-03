@@ -14,6 +14,7 @@ const InputMessage = ({
   const [newMessage, setNewMessage] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const userName = localStorage.getItem("userName");
   const avatar = localStorage.getItem("userImgUrl");
   const [showPicker, setShowPicker] = useState(false);
   const onEmojiClick = (event, emojiObject) => {
@@ -42,8 +43,9 @@ const InputMessage = ({
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result).data;
-        console.log(payload.senderAvatar);
+        console.log(payload);
         payload.senderAvatar = avatar;
+        payload.fullName = userName;
         stompClient.send(`/app/sendMessage`, {}, JSON.stringify(payload));
         setMessages([...messages, {...payload}]);
         setScroll(true);
