@@ -1,5 +1,5 @@
 import React, {useState, useRef} from "react";
-import {AiOutlineClose, AiOutlineArrowLeft} from "react-icons/ai";
+import {AiOutlineArrowLeft} from "react-icons/ai";
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import {toast} from "react-toastify";

@@ -4,7 +4,6 @@ import Footer from "../footer/Footer";
 import Picker from "emoji-picker-react";
 import TextareaAutosize from "react-textarea-autosize";
 import {BsEmojiSmile} from "react-icons/bs";
-import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
 import Carousel from "./Carousel";
 import "react-toastify/dist/ReactToastify.css";

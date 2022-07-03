@@ -1,5 +1,4 @@
 import Navbar from "../../components/navbar/Navbar";
-import EditPostComponent from "../../components/post/EditPost";
 import userService from "../../Services/user.service";
 import React, {useState, useEffect} from "react";
 import avatarDefault from "../../Resource/Image/avatar.png";

@@ -1,7 +1,6 @@
 import {useState} from "react";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {MdOutlineReportProblem} from "react-icons/md";
-import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {BsPerson} from "react-icons/bs";

@@ -1,4 +1,4 @@
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import Newpost from "../pages/NewPost/Newpost";
 import Homepage from "../pages/Homepage/Homepage";
@@ -24,8 +24,6 @@ import EditPost from "../pages/EditPostPage/EditPost";
 import Conversation from "../pages/MessagePage/Conversation";
 
 const index = () => {
-  const user = localStorage.getItem("user");
-
   return (
     <>
       <Routes>

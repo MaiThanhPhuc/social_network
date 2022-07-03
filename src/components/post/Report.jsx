@@ -1,7 +1,5 @@
 import {useState} from "react";
 import {BsCheckCircle} from "react-icons/bs";
-import userService from "../../Services/user.service";
-import {toast} from "react-toastify";
 
 const Report = ({postID, setShowReport}) => {
   const [showReason, setShowReason] = useState(false);

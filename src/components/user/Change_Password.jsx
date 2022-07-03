@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import {useOutletContext} from "react-router-dom";
 
 const Change_Password = () => {
-  const [userData, setLoad] = useOutletContext();
+  const [userData] = useOutletContext();
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user.access_token;
   const formik = useFormik({

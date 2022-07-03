@@ -1,6 +1,5 @@
 import {useParams} from "react-router-dom";
 import {useState, useRef, useEffect} from "react";
-import {useFormik} from "formik";
 import userService from "../../Services/user.service";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {toast} from "react-toastify";

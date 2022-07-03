@@ -1,4 +1,4 @@
-import {useEffect, useState, useMemo} from "react";
+import {useEffect, useState} from "react";
 import DataTable from "react-data-table-component";
 import {BiDotsVerticalRounded} from "react-icons/bi";
 import {FaRegEdit} from "react-icons/fa";
