@@ -134,7 +134,13 @@ const TimeLine = () => {
                 }
               >
                 {posts.map((post, index) => (
-                  <Post key={index} postData={post} stompClient={stompClient} />
+                  <Post
+                    key={index}
+                    postData={post}
+                    posts={posts}
+                    setPosts={setPosts}
+                    stompClient={stompClient}
+                  />
                 ))}
               </InfiniteScroll>
             </div>

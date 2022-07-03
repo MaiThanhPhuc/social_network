@@ -36,7 +36,7 @@ const Topten = () => {
     <>
       <div className=" p-3 bg-white mb-4 rounded ">
         <div className="heading font-medium text-[15px] text-black mb-2">
-          Top 10 most follower
+          Top 10 most followed people
         </div>
 
         {topten.map((data, i) => (

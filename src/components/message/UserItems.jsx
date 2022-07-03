@@ -1,45 +1,44 @@
+import {useEffect, useState} from "react";
 import avatarDefault from "../../Resource/Image/avatar.png";
+import {Link, useParams, useLocation} from "react-router-dom";
 
-const UserItems = ({
-  dataConversation,
-  setReceiverID,
-  handleResetConversation,
-  setGuestName,
-  setAvatarGuest,
-}) => {
-  const handleLoadConversation = () => {
-    handleResetConversation();
-    setAvatarGuest(dataConversation.avatar);
-    setGuestName(dataConversation.lastName + " " + dataConversation.firstName);
-    setReceiverID(dataConversation.id);
-  };
+const UserItems = ({dataUser}) => {
+  const params = useParams();
+  let receiverID = params.receiveID;
+
+  const [activeIndex, setActiveIndex] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const curPath = window.location.pathname.split("/inbox/")[1];
+    setActiveIndex(curPath == dataUser.id ? true : false);
+  }, [location]);
+
   return (
     <>
-      {dataConversation !== undefined ? (
-        <div
-          onClick={handleLoadConversation}
-          className="user-items focus:bg-grayLight cursor-pointer flex items-center hover:bg-grayLight rounded px-4 py-2"
+      {dataUser !== undefined ? (
+        <Link
+          to={`/inbox/${dataUser.id}`}
+          className={`user-item cursor-pointer flex items-cente rounded px-4 py-2 ${
+            activeIndex ? "bg-grayLight" : "hover:bg-grayLight"
+          } `}
         >
           <button className="avatar">
             <div className="w-12 rounded-full">
               <img
-                src={
-                  dataConversation.avatar != null
-                    ? dataConversation.avatar
-                    : avatarDefault
-                }
+                src={dataUser.avatar != null ? dataUser.avatar : avatarDefault}
               />
             </div>
           </button>
           <div className="box-left flex flex-col ml-2">
             <a className="user-name text-black font-semibold ">
-              {dataConversation.lastName + " " + dataConversation.firstName}
+              {dataUser.lastName + " " + dataUser.firstName}
             </a>
             <span className="text-grayText text-xs font-semibold">
-              {dataConversation.email}
+              {dataUser.email}
             </span>
           </div>
-        </div>
+        </Link>
       ) : null}
     </>
   );

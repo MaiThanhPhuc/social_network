@@ -160,6 +160,16 @@ class UserService {
     );
     return res;
   }
+
+  async getPostID(userID, postID) {
+    const response = await axios.get(
+      API_URL + `post/2?postId=${postID}&userId=${userID}`,
+      {
+        headers: authHeader(),
+      }
+    );
+    return response.data.data;
+  }
 }
 
 export default new UserService();

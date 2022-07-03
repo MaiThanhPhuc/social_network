@@ -3,82 +3,7 @@ import DataTable from "react-data-table-component";
 import {BiDotsVerticalRounded} from "react-icons/bi";
 import {FaRegEdit} from "react-icons/fa";
 import {AiOutlineDelete} from "react-icons/ai";
-export const columns = [
-  {
-    name: "ID",
-    selector: "id",
-    sortable: true,
-  },
-  {
-    name: "UsedID Owner",
-    selector: "firstName",
-    sortable: true,
-  },
-  {
-    name: "Image",
-    selector: "imageUrl",
-    cell: (row) => <img className="w-9 h-9 rounded-full" />,
-    sortable: true,
-  },
-
-  {
-    name: "Content",
-    selector: "content",
-    sortable: true,
-  },
-  {
-    name: "Liked",
-    selector: "countLike",
-    sortable: true,
-  },
-  {
-    name: "Comented",
-    selector: "countCmted",
-    sortable: true,
-  },
-  {
-    name: "Reported",
-    selector: "countReported",
-    sortable: true,
-  },
-  {
-    name: "Shared",
-    selector: "countShared",
-    sortable: true,
-  },
-  {
-    cell: () => (
-      <div class="dropdown dropdown-end">
-        <label tabindex="0" class="">
-          <button
-            className="hover:bg-black/20 text-black rounded-full"
-            onClick={handleButtonClick}
-          >
-            <BiDotsVerticalRounded size={20} />
-          </button>
-        </label>
-        <ul
-          tabindex="0"
-          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32"
-        >
-          <li>
-            <a>
-              <FaRegEdit size={18} /> Edit
-            </a>
-          </li>
-          <li>
-            <a className="text-red">
-              <AiOutlineDelete size={18} /> Delete
-            </a>
-          </li>
-        </ul>
-      </div>
-    ),
-    ignoreRowClick: true,
-    allowOverflow: true,
-    button: true,
-  },
-];
+import {FiChevronLeft, FiChevronRight} from "react-icons/fi";
 
 const customStyles = {
   headRow: {
@@ -109,42 +34,178 @@ const customStyles = {
 const handleButtonClick = () => {};
 
 const PostManagement = () => {
-  const [pending, setPending] = useState(true);
-  const [dataUser, setDataUser] = useState([]);
+  const [dataPost, setDataPost] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(10);
+  const [totalPage, setTotalPage] = useState(0);
+  const [page, setPage] = useState(0);
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const handlePageChange = (page) => {
-    fetchUsers(page);
-  };
-  const fetchUsers = async (page) => {
+  useEffect(() => {
+    fetchPosts(page);
+  }, []);
+
+  const fetchPosts = async (temp) => {
     setLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://socialnetwork999.herokuapp.com/admin/api/post?page=${temp}&size=10`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        const payload = JSON.parse(result);
+        console.log(payload);
+
+        setDataPost(payload);
+        setLoading(false);
+        setTotalPage(payload.totalPages);
+      })
+      .catch((error) => console.log("error", error));
   };
 
-  const handlePerRowsChange = async (newPerPage, page) => {};
+  const handleNextPage = () => {
+    if (page !== totalPage) {
+      setPage(page + 1);
+      fetchPosts(page + 1);
+    } else {
+      return 0;
+    }
+  };
 
+  const handlePrevPage = () => {
+    if (page !== 0) {
+      setPage(page - 1);
+      console.log(page);
+      fetchPosts(page - 1);
+    } else {
+      return 0;
+    }
+  };
+
+  const columns = [
+    {
+      name: "ID",
+      selector: (row) => row.post.id,
+      sortable: true,
+    },
+    {
+      name: "OwnerID",
+      selector: (row) => row.userCreate,
+      grow: 1,
+
+      sortable: true,
+    },
+    {
+      name: "Image",
+      cell: (row) =>
+        row.post.images.map((temp) => (
+          <img key={temp.imgPostId} src={temp.urlImage} className="w-9 h-9 " />
+        )),
+      sortable: true,
+      maxWidth: "600px",
+    },
+
+    {
+      name: "Content",
+      selector: (row) => row.post.content,
+      sortable: true,
+    },
+    {
+      name: "Liked",
+      selector: (row) => row.post.countLiked,
+
+      sortable: true,
+    },
+    {
+      name: "Comented",
+      selector: (row) => row.post.countCmted,
+
+      sortable: true,
+    },
+    {
+      name: "Shared",
+      selector: (row) => row.post.countShated,
+
+      sortable: true,
+    },
+    {
+      cell: () => (
+        <div className="dropdown dropdown-end">
+          <label tabIndex="0" className="">
+            <button
+              className="hover:bg-black/20 text-black rounded-full"
+              onClick={handleButtonClick}
+            >
+              <BiDotsVerticalRounded size={20} />
+            </button>
+          </label>
+          <ul
+            tabIndex="0"
+            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32"
+          >
+            <li>
+              <a className="text-red">
+                <AiOutlineDelete size={18} /> Delete
+              </a>
+            </li>
+          </ul>
+        </div>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
   return (
     <>
-      <div className="flex justify-center pt-11  ">
+      <div className="flex justify-center pt-9  ">
         <div className="flex flex-col justify-start border border-black/20 p-6 shadow">
-          <div className="text-black text-2xl mb-6 ">User Management</div>
-          <div className="main w-[1000px] ">
+          <div className="text-black text-2xl mb-5 ">Post Management</div>
+          <div className="main w-[1000px]  ">
             <DataTable
-              // progressPending={loading}
+              progressPending={loading}
               columns={columns}
-              // data={data}
+              data={dataPost}
               customStyles={customStyles}
               highlightOnHover
               pointerOnHover
-              pagination
-              paginationServer
-              paginationTotalRows={totalRows}
-              onChangeRowsPerPage={handlePerRowsChange}
-              onChangePage={handlePageChange}
               defaultSortField="id"
               defaultSortAsc={false}
             />
+            <div className="text-right flex items-center justify-end mr-8 mt-4">
+              <span className="text-xs font-meidum">
+                {page + 1} of {totalPage}
+              </span>
+              <div className="flex ml-4 gap-4 items-center text-xs">
+                <button
+                  onClick={handlePrevPage}
+                  className={`w-6 h-6 flex justify-center items-center rounded-full  ${
+                    page !== 0 ? " hover:bg-grayLight text-black " : "text-gray"
+                  } `}
+                >
+                  <FiChevronLeft size={23} />
+                </button>
+                {page + 1}
+                <button
+                  onClick={handleNextPage}
+                  className={`w-6 h-6 flex justify-center items-center rounded-full  ${
+                    page + 1 !== totalPage
+                      ? " hover:bg-grayLight text-black "
+                      : "text-gray"
+                  } `}
+                >
+                  <FiChevronRight size={23} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

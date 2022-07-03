@@ -3,7 +3,7 @@ import {BiDotsVerticalRounded} from "react-icons/bi";
 import {format} from "timeago.js";
 import avatarDefault from "../../Resource/Image/avatar.png";
 
-const Message = ({data, avatarGuest}) => {
+const Message = ({data}) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showTime, setShowTime] = useState(false);
   const [showRemove, setShowRemove] = useState(false);
@@ -84,10 +84,13 @@ const Message = ({data, avatarGuest}) => {
             <div className="avatar mr-2">
               <div className="w-9 rounded-full">
                 <img
-                  src={avatarGuest !== null ? avatarGuest : avatarDefault}
+                  src={
+                    data.senderAvatar !== null
+                      ? data.senderAvatar
+                      : avatarDefault
+                  }
                   alt="reveiver"
                 />
-                <img src={avatarGuest} />
               </div>
             </div>
             <div

@@ -1,10 +1,18 @@
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {format} from "timeago.js";
-
+import {Link} from "react-router-dom";
 const Notification = ({data}) => {
+  console.log(data);
   return (
     <>
-      <div className="cursor-pointer ">
+      <Link
+        to={
+          data.postId !== null
+            ? `/post/${data.postId}`
+            : `/user/${data.userCreate.id}`
+        }
+        className="cursor-pointer "
+      >
         <div className="flex w-full bg-white border-b-[1px] border-gray py-1 px-3 items-center hover:bg-black/10">
           <div className="w-14 flex flex-col">
             <div className="flex items-center">
@@ -29,7 +37,7 @@ const Notification = ({data}) => {
             </span>
           </div>
         </div>
-      </div>
+      </Link>
     </>
   );
 };

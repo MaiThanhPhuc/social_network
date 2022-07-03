@@ -1,10 +1,8 @@
 import {useEffect, useState, useMemo} from "react";
 import DataTable from "react-data-table-component";
 import {BiDotsVerticalRounded} from "react-icons/bi";
-import {FaRegEdit} from "react-icons/fa";
 import {AiOutlineDelete} from "react-icons/ai";
-import {FiChevronLeft, FiChevronRight} from "react-icons/fi";
-import {Link} from "react-router-dom";
+
 const customStyles = {
   headRow: {
     style: {
@@ -31,15 +29,13 @@ const customStyles = {
   },
 };
 
-const UserManagement = () => {
+const ReportUser = () => {
   const [dataUser, setDataUser] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [totalPage, setTotalPage] = useState();
-  const [page, setPage] = useState(0);
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    fetchUsers(page);
+    fetchUsers();
   }, []);
 
   const fetchUsers = async (temp) => {
@@ -54,37 +50,17 @@ const UserManagement = () => {
     };
 
     fetch(
-      `https://socialnetwork999.herokuapp.com/admin/api/user?page=${temp}&size=10`,
+      `https://socialnetwork999.herokuapp.com/admin/api/report/user`,
       requestOptions
     )
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result).data;
-        setDataUser(payload.content);
+        setDataUser(payload);
         setLoading(false);
-        setTotalPage(payload.totalPages);
         console.log(payload);
       })
       .catch((error) => console.log("error", error));
-  };
-
-  const handleNextPage = () => {
-    if (page !== totalPage) {
-      setPage(page + 1);
-      fetchUsers(page + 1);
-    } else {
-      return 0;
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page !== 0) {
-      setPage(page - 1);
-      console.log(page);
-      fetchUsers(page - 1);
-    } else {
-      return 0;
-    }
   };
 
   const columns = [
@@ -116,29 +92,12 @@ const UserManagement = () => {
       sortable: true,
     },
     {
-      name: "Role",
-      selector: (row) => row.role,
-      sortable: true,
+      name: "Birthday",
+      selector: (row) => row.birthDay,
     },
     {
-      name: "Status",
-      selector: (row) => (row.enable ? "Activated" : "Not activated"),
-      conditionalCellStyles: [
-        {
-          when: (row) => row.enable === true,
-          style: {
-            backgroundColor: "rgba(63, 195, 128, 0.9)",
-            color: "white",
-          },
-        },
-        {
-          when: (row) => row.enable === false,
-          style: {
-            backgroundColor: "rgba(242, 38, 19, 0.9)",
-            color: "white",
-          },
-        },
-      ],
+      name: "Gender",
+      selector: (row) => row.gender,
     },
     {
       cell: (row) => (
@@ -152,11 +111,6 @@ const UserManagement = () => {
             tabIndex="0"
             className="dropdown-content menu p-1 shadow bg-base-100 rounded-box w-32"
           >
-            <li>
-              <Link to={`/admin/user/${row.id}`}>
-                <FaRegEdit size={18} /> Edit
-              </Link>
-            </li>
             <li>
               <a
                 onClick={() => {
@@ -200,10 +154,12 @@ const UserManagement = () => {
 
   return (
     <>
-      <div className="flex justify-center pt-9  ">
+      <div className="flex justify-center pt-11  ">
         <div className="flex flex-col justify-start border border-black/20 p-6 shadow">
-          <div className="text-black text-2xl mb-5 ">User Management</div>
-          <div className="main w-[1000px]  ">
+          <div className="text-black text-2xl mb-6 ">
+            Report Users Management
+          </div>
+          <div className="main w-[1000px] ">
             <DataTable
               progressPending={loading}
               columns={columns}
@@ -211,35 +167,11 @@ const UserManagement = () => {
               customStyles={customStyles}
               highlightOnHover
               pointerOnHover
+              fixedHeader={true}
+              fixedHeaderScrollHeight={400}
               defaultSortField="id"
               defaultSortAsc={false}
             />
-            <div className="text-right flex items-center justify-end mr-8 mt-4">
-              <span className="text-xs font-meidum">
-                {page + 1} of {totalPage}
-              </span>
-              <div className="flex ml-4 gap-4 items-center text-xs">
-                <button
-                  onClick={handlePrevPage}
-                  className={`w-6 h-6 flex justify-center items-center rounded-full  ${
-                    page !== 0 ? " hover:bg-grayLight text-black " : "text-gray"
-                  } `}
-                >
-                  <FiChevronLeft size={23} />
-                </button>
-                {page + 1}
-                <button
-                  onClick={handleNextPage}
-                  className={`w-6 h-6 flex justify-center items-center rounded-full  ${
-                    page + 1 !== totalPage
-                      ? " hover:bg-grayLight text-black "
-                      : "text-gray"
-                  } `}
-                >
-                  <FiChevronRight size={23} />
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -247,4 +179,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default ReportUser;

@@ -33,7 +33,7 @@ const Carousel = ({imageUrls, setImages, files, setFiles}) => {
                   );
                   setFiles(fileArray);
                 }}
-                className=" cursor-pointer p-2 absolute top-0 right-0 bg-red/100 rounded"
+                className=" cursor-pointer p-2 absolute top-0 right-0 bg-red rounded"
               >
                 <BsTrash />
               </div>

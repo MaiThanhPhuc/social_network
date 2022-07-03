@@ -20,6 +20,7 @@ const Guest = () => {
   const [countPost, setCountPost] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [user, setUser] = useState(null);
+  const [guest, setGuest] = useState();
   const temp = JSON.parse(localStorage.getItem("user"));
   const Id = temp.userId;
   const params = useParams();
@@ -47,10 +48,19 @@ const Guest = () => {
   };
 
   useEffect(() => {
-    fetchUserApi();
-    fetchData();
+    setGuest(guestID);
+    setPosts([]);
+    setCountPost([]);
+    setPage(0);
+    setUser(null);
+    setHasMore(true);
     connect();
   }, [guestID]);
+
+  useEffect(() => {
+    fetchPostApi();
+    fetchUserApi();
+  }, [guest]);
 
   const fetchUserApi = async () => {
     userService

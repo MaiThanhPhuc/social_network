@@ -8,11 +8,13 @@ import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
 import Carousel from "./Carousel";
 import "react-toastify/dist/ReactToastify.css";
-import PolicyPost from "../footer/PolicyPost";
 
-const NewPostForm = ({Avatar}) => {
-  const [content, setContent] = useState("");
-  const [images, setImages] = useState([]);
+const EditPost = ({Avatar, dataPost}) => {
+  const [content, setContent] = useState(dataPost.content);
+  const [images, setImages] = useState(
+    dataPost.images.map((temp) => temp.urlImage)
+  );
+
   const [files, setFiles] = useState();
   const [showPicker, setShowPicker] = useState(false);
   const toastId = useRef(null);
@@ -37,17 +39,8 @@ const NewPostForm = ({Avatar}) => {
     }
   };
 
-  const newPostApi = async () => {
-    await userService
-      .newPost(content, Id)
-      .then((res) => {
-        notify();
-        Array.from(files).map((file) => addImagePost(res.data.data.id, file));
-      })
-      .catch(() => updateFailedNoti());
-  };
   const notify = () =>
-    (toastId.current = toast.loading("Upload in progress, please wait...", {
+    (toastId.current = toast.loading("Update in progress, please wait...", {
       autoClose: false,
       theme: "dark",
     }));
@@ -64,7 +57,6 @@ const NewPostForm = ({Avatar}) => {
       render: "Post failed please try again ",
       autoClose: 3000,
       isLoading: false,
-
       theme: "dark",
     });
 
@@ -99,10 +91,39 @@ const NewPostForm = ({Avatar}) => {
       });
   };
 
+  const updatePost = () => {
+    notify();
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      id: dataPost.id,
+      content: content,
+      userId: Id,
+    });
+
+    var requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("https://socialnetwork999.herokuapp.com/api/post", requestOptions)
+      .then((response) => response.text())
+      .then(() => {
+        Array.from(files).map((file) => addImagePost(dataPost.id, file));
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (content.trim() !== "" || images !== "") {
-      newPostApi();
+      updatePost();
     }
   };
 
@@ -193,13 +214,12 @@ const NewPostForm = ({Avatar}) => {
                   type="submit"
                   className="mt-2 btn btn-primary normal-case text-white btn-sm px-8 "
                 >
-                  Post
+                  Save Change
                 </button>
               </div>
             </div>
           </div>
           <div className="w-footerWidth">
-            <PolicyPost />
             <Footer />
           </div>
         </div>
@@ -208,4 +228,4 @@ const NewPostForm = ({Avatar}) => {
   );
 };
 
-export default NewPostForm;
+export default EditPost;

@@ -9,7 +9,7 @@ const CarouselPost = ({images}) => {
   return (
     <>
       {images !== undefined ? (
-        <div className=" w-postWidth h-imagePostHeight">
+        <div className=" w-postWidth h-imagePostHeight px-1">
           <Swiper
             slidesPerView={1}
             spaceBetween={30}

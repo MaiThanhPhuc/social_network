@@ -3,29 +3,26 @@ import MessageBox from "../../components/message/MessageBox";
 import Navbar from "../../components/navbar/Navbar";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {BiMessageRoundedAdd} from "react-icons/bi";
-import NoneConversation from "../../components/message/NoneConversation";
 import UserItems from "../../components/message/UserItems";
 import userService from "../../Services/user.service";
 import NewMessageUser from "../../components/message/NewMessageUser";
-
-const MessagePage = () => {
+const Conversation = () => {
   const [avatar, setAvatar] = useState();
   const user = JSON.parse(localStorage.getItem("user"));
   const [users, setUsers] = useState([]);
-
   const [listUser, setListUser] = useState([]);
   const Id = user.userId;
 
   useEffect(() => {
     fetchUserApi();
     fetchListHistoryMessage();
-    fetchUserFollowing();
   }, []);
 
   const fetchUserFollowing = () => {
     userService
       .getFollowing(user.userId)
       .then((res) => {
+        console.log(res.data.data);
         setUsers(res.data.data);
       })
       .catch((err) => console.log(err));
@@ -98,7 +95,7 @@ const MessagePage = () => {
                   )}
                 </div>
               </div>
-              <NoneConversation />
+              <MessageBox />
             </div>
           </div>
         </div>
@@ -107,4 +104,4 @@ const MessagePage = () => {
   );
 };
 
-export default MessagePage;
+export default Conversation;

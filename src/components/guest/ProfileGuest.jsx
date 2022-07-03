@@ -5,6 +5,7 @@ import userService from "../../Services/user.service";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {BsPerson} from "react-icons/bs";
+import {Link} from "react-router-dom";
 const ProfileGuest = ({stompClient, userData}) => {
   const [follow, setFollow] = useState(userData.follow);
   const [follower, setFollower] = useState(userData.countFollower);
@@ -155,9 +156,12 @@ const ProfileGuest = ({stompClient, userData}) => {
               Follow
             </button>
           )}
-          <button className=" w-2/5 bg-primaryblue hover:bg-primaryblue/80  rounded px-2 py-[6px] text-[13px] font-semibold text-white">
+          <Link
+            to={`/inbox/${userData.id}`}
+            className=" w-2/5 bg-primaryblue hover:bg-primaryblue/80  rounded px-2 py-[6px] text-[13px] font-semibold text-white"
+          >
             Chat
-          </button>
+          </Link>
           <a
             href="#my-modal"
             className="hover:bg-grayLight p-1 rounded-full text-[13px] cursor-pointer font-semibold text-black"

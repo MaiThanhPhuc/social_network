@@ -14,6 +14,7 @@ const InputMessage = ({
   const [newMessage, setNewMessage] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const avatar = localStorage.getItem("userImgUrl");
   const [showPicker, setShowPicker] = useState(false);
   const onEmojiClick = (event, emojiObject) => {
     setNewMessage((prevInput) => prevInput + emojiObject.emoji);
@@ -41,7 +42,8 @@ const InputMessage = ({
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result).data;
-        console.log(payload);
+        console.log(payload.senderAvatar);
+        payload.senderAvatar = avatar;
         stompClient.send(`/app/sendMessage`, {}, JSON.stringify(payload));
         setMessages([...messages, {...payload}]);
         setScroll(true);
@@ -52,15 +54,19 @@ const InputMessage = ({
   const handleSubmitInput = (e) => {
     if (e.key == "Enter" && !e.shiftKey) {
       e.preventDefault();
-      sendMessageAPI();
-      setNewMessage("");
+      if (newMessage.trim() !== "") {
+        sendMessageAPI();
+        setNewMessage("");
+      }
     }
   };
 
   const handleSubmitButton = (e) => {
     e.preventDefault();
-    sendMessageAPI();
-    setNewMessage("");
+    if (newMessage.trim() !== "") {
+      sendMessageAPI();
+      setNewMessage("");
+    }
   };
 
   return (

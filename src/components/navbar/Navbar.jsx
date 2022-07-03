@@ -102,8 +102,7 @@ const Navbar = ({Avatar}) => {
     <>
       <nav className="flex items-center py-1 px-16 justify-evenly bg-white fixed w-full top-0 z-20 border-b border-black/20 ">
         <Link to="/" className="wrapper-right flex items-center cursor-pointer">
-          <img src={logo} alt="Logo" className="w-[45px] h-[45px]" />
-          <div className="text-black text-lg">mangxahoi</div>
+          <img src={logo} alt="Logo" className="w-[200px]" />
         </Link>
         <form className="relative bg-grayLight wrapper-middle outline outline-[#000]/20 outline-1 h-8 w-[300px] flex hover:outline-primaryblue focus-within:outline-primaryblue rounded ">
           <div className="pl-4 pr-3 flex justify-center items-center ">
@@ -206,11 +205,11 @@ const Navbar = ({Avatar}) => {
             </label>
             <ul
               tabIndex="0"
-              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 text-base"
+              className="dropdown-content menu p-2 shadow bg-white rounded-box w-40 text-base"
             >
               <li>
                 <Link
-                  to={`/user`}
+                  to={`/user/${Id}`}
                   className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                 >
                   My wall
@@ -224,6 +223,17 @@ const Navbar = ({Avatar}) => {
                   Edit profile
                 </Link>
               </li>
+              {user.role !== "ROLE_ADMIN" ? null : (
+                <li>
+                  <Link
+                    to="/admin"
+                    className=" text-sm active:bg-primaryblue/50 p-2 text-black"
+                  >
+                    Go to Admin Panel
+                  </Link>
+                </li>
+              )}
+
               <li>
                 <button
                   onClick={handleSignOut}
