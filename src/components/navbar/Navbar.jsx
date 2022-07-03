@@ -184,14 +184,8 @@ const Navbar = ({Avatar}) => {
             onClick={() => {
               setMess(false);
             }}
-            className="indicator"
+            className="mb-[2px]"
           >
-            <span
-              className={
-                mess &&
-                "right-2 top-[5px] indicator-item badge badge-accent badge-xs"
-              }
-            ></span>
             <AiOutlineMessage size={25} />
           </Link>
 

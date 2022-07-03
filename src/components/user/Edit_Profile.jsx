@@ -231,7 +231,7 @@ const Edit_Profile = () => {
                     onChange={handlePreviewImages}
                   />
                 </label>
-                <div class="opacity-0 group-hover:opacity-100 duration-300 absolute inset-x-0 bottom-0 flex justify-center items-center text-base text-black bg-white/70 font-semibold h-[40px]">
+                <div className="opacity-0 group-hover:opacity-100 duration-300 absolute inset-x-0 bottom-0 flex justify-center items-center text-base text-black bg-white/70 font-semibold h-[40px]">
                   Select image
                 </div>
               </div>

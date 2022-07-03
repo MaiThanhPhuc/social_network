@@ -32,13 +32,11 @@ const FollowerUser = () => {
       .getFollower(Id)
       .then((res) => {
         setFollowers(res.data.data);
-        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  console.log(followers);
   useEffect(() => {
     fetchDataFollower();
   }, []);
@@ -48,8 +46,11 @@ const FollowerUser = () => {
       <div className="bg-white rounded h-[600px] overflow-y-auto p-4">
         <div className="grid grid-cols-2 gap-4">
           {followers != null
-            ? followers.map((item) => (
-                <div className="wrap-items flex justify-between border border-black/10 rounded p-2">
+            ? followers.map((item, i) => (
+                <div
+                  key={i}
+                  className="wrap-items flex justify-between border border-black/10 rounded p-2"
+                >
                   <div className="flex items-center ">
                     <Link to={`/user/${item.id}`} className="avatar">
                       <div className="w-14 rounded">

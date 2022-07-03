@@ -75,6 +75,7 @@ const Sidebar = ({dataAdmin}) => {
         <div className="menu-items flex flex-col gap-4 px-4 shadow bg-white py-4 rounded">
           {sidebarItems.map((item, index) => (
             <Link
+              key={index}
               to={item.to}
               className={`flex p-3 items-center w-full rounded-xl gap-2 cursor-pointer  ${
                 activeIndex === index
@@ -88,8 +89,8 @@ const Sidebar = ({dataAdmin}) => {
           ))}
         </div>
         <div className="bottom flex flex-col items-center mt-1 bg-white shadow py-4 rounded ">
-          <div class="avatar">
-            <div class="w-24 rounded-full">
+          <div className="avatar">
+            <div className="w-24 rounded-full">
               <img
                 src={
                   dataAdmin.imageUrl !== null

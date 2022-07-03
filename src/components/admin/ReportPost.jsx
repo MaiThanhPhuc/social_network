@@ -72,7 +72,11 @@ const ReportPost = () => {
       name: "Images",
       cell: (row) =>
         row.images.map((temp) => (
-          <img key={temp.imgPostId} src={temp.urlImage} className="w-9 h-9 " />
+          <img
+            key={temp.imgPostId}
+            src={temp.urlImage}
+            className="w-9 h-9 object-contain "
+          />
         )),
       sortable: true,
     },
@@ -102,7 +106,7 @@ const ReportPost = () => {
     {
       cell: (row) => (
         <div className="dropdown dropdown-left dropdown-end">
-          <label tabIndex="0" class="">
+          <label tabIndex="0" className="">
             <button className="hover:bg-black/20 text-black rounded-full">
               <BiDotsVerticalRounded size={20} />
             </button>

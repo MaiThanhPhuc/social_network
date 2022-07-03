@@ -62,7 +62,6 @@ const PostManagement = () => {
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result);
-        console.log(payload);
 
         setDataPost(payload);
         setLoading(false);
@@ -107,7 +106,11 @@ const PostManagement = () => {
       name: "Image",
       cell: (row) =>
         row.post.images.map((temp) => (
-          <img key={temp.imgPostId} src={temp.urlImage} className="w-9 h-9 " />
+          <img
+            key={temp.imgPostId}
+            src={temp.urlImage}
+            className="w-9 h-9 object-contain"
+          />
         )),
       sortable: true,
       maxWidth: "600px",

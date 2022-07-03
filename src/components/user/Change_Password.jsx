@@ -68,8 +68,8 @@ const Change_Password = () => {
         <div className="bg-white rounded h-[600px]">
           <div className="flex flex-col gap-6 py-8 items-center">
             <div className="avatar-change flex items-center justify-center w-[300px] ">
-              <a class="avatar w-1/4 flex justify-end">
-                <div class="w-9 rounded-full">
+              <a className="avatar w-1/4 flex justify-end">
+                <div className="w-9 rounded-full">
                   <img
                     src={
                       userData.imageUrl !== null

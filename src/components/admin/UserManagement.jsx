@@ -63,7 +63,6 @@ const UserManagement = () => {
         setDataUser(payload.content);
         setLoading(false);
         setTotalPage(payload.totalPages);
-        console.log(payload);
       })
       .catch((error) => console.log("error", error));
   };
@@ -96,7 +95,7 @@ const UserManagement = () => {
     {
       name: "Avatar",
       cell: (row) => (
-        <img src={row.imageUrl} className="w-9 h-9 rounded-full" />
+        <img src={row.imageUrl} className="w-9 h-9 rounded-full object-cover" />
       ),
       sortable: true,
     },
@@ -143,7 +142,7 @@ const UserManagement = () => {
     {
       cell: (row) => (
         <div className="dropdown dropdown-left dropdown-end">
-          <label tabIndex="0" class="">
+          <label tabIndex="0" className="">
             <button className="hover:bg-black/20 text-black rounded-full">
               <BiDotsVerticalRounded size={20} />
             </button>

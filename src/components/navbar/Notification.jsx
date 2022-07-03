@@ -2,7 +2,6 @@ import avatarDefault from "../../Resource/Image/avatar.png";
 import {format} from "timeago.js";
 import {Link} from "react-router-dom";
 const Notification = ({data}) => {
-  console.log(data);
   return (
     <>
       <Link
