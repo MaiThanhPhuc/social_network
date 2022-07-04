@@ -23,6 +23,7 @@ import ReportUser from "../components/admin/ReportUser";
 import EditPost from "../pages/EditPostPage/EditPost";
 import Conversation from "../pages/MessagePage/Conversation";
 import SuccessVerify from "../components/signup/SuccessVerify";
+import FailedVerify from "../components/signup/FailedVerify";
 
 const index = () => {
   return (
@@ -68,6 +69,7 @@ const index = () => {
         </Route>
         <Route path={"/login"} element={<Homepage />} />
         <Route path={"/confirmemailqpnetwork"} element={<SuccessVerify />} />
+        <Route path={"/confirmemailfailed"} element={<FailedVerify />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

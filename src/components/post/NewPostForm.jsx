@@ -101,7 +101,9 @@ const NewPostForm = ({Avatar}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (content.trim() !== "" || images !== "") {
+    console.log(content);
+    console.log(images[0]);
+    if (content.trim() !== "" || images[0] !== undefined) {
       newPostApi();
     }
   };
