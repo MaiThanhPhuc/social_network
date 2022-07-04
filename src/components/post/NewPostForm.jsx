@@ -41,10 +41,14 @@ const NewPostForm = ({Avatar}) => {
     await userService
       .newPost(content, Id)
       .then((res) => {
-        notify();
-        Array.from(files).map((file) => addImagePost(res.data.data.id, file));
+        if (images[0] !== undefined) {
+          Array.from(files).map((file) => addImagePost(res.data.data.id, file));
+        } else {
+          updateNoti();
+          setContent("");
+        }
       })
-      .catch(() => updateFailedNoti());
+      .catch((err) => console.log(err));
   };
   const notify = () =>
     (toastId.current = toast.loading("Upload in progress, please wait...", {
@@ -94,16 +98,14 @@ const NewPostForm = ({Avatar}) => {
         }
       })
       .catch((error) => {
-        updateFailedNoti();
         console.log("error", error);
       });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(content);
-    console.log(images[0]);
     if (content.trim() !== "" || images[0] !== undefined) {
+      notify();
       newPostApi();
     }
   };

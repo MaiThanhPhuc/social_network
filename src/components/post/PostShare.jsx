@@ -1,4 +1,4 @@
-import Carousel from "./Carousel";
+import CarouselPost from "./CarouselPost";
 import {Link} from "react-router-dom";
 import {format} from "timeago.js";
 
@@ -7,7 +7,7 @@ const PostShare = ({postData}) => {
   return (
     <>
       <div className="top-post w-postWidth mx-4 rounded pb-2 border border-black/20 ">
-        <Carousel imageUrls={postData.postShared.imgUrl} />
+        <CarouselPost images={postData.postShared.images} />
         <div className="heading-avatar flex items-center mt-2">
           <div className="box-left flex flex-col ml-2 ">
             <Link
