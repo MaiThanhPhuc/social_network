@@ -3,7 +3,6 @@ import TextareaAutosize from "react-textarea-autosize";
 import {IoSend} from "react-icons/io5";
 import {useState} from "react";
 import Picker from "emoji-picker-react";
-
 const InputMessage = ({
   stompClient,
   setScroll,
@@ -12,10 +11,10 @@ const InputMessage = ({
   receiID,
 }) => {
   const [newMessage, setNewMessage] = useState("");
-
   const user = JSON.parse(localStorage.getItem("user"));
   const userName = localStorage.getItem("userName");
   const avatar = localStorage.getItem("userImgUrl");
+  const defaultAvatar = "https://i.ibb.co/98bxbqS/avatar.png";
   const [showPicker, setShowPicker] = useState(false);
   const onEmojiClick = (event, emojiObject) => {
     setNewMessage((prevInput) => prevInput + emojiObject.emoji);
@@ -43,8 +42,7 @@ const InputMessage = ({
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result).data;
-        console.log(payload);
-        payload.senderAvatar = avatar;
+        payload.senderAvatar = avatar === "null" ? defaultAvatar : avatar;
         payload.fullName = userName;
         stompClient.send(`/app/sendMessage`, {}, JSON.stringify(payload));
         setMessages([...messages, {...payload}]);
@@ -54,7 +52,7 @@ const InputMessage = ({
   };
 
   const handleSubmitInput = (e) => {
-    if (e.key == "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (newMessage.trim() !== "") {
         sendMessageAPI();

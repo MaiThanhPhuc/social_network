@@ -8,13 +8,11 @@ import userService from "../../Services/user.service";
 import InfiniteScroll from "react-infinite-scroll-component";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {toast} from "react-toastify";
+import SkeletonPost from "../../components/timeline/SkeletonPost";
+import Topten from "../../components/timeline/Topten";
 import {over} from "stompjs";
 import SockJS from "sockjs-client";
-import "react-toastify/dist/ReactToastify.css";
-import Topten from "../../components/timeline/Topten";
-import SkeletonPost from "../../components/timeline/SkeletonPost";
 var stompClient = null;
-
 const TimeLine = () => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
@@ -30,6 +28,12 @@ const TimeLine = () => {
     stompClient.connect({}, onConnected);
   };
 
+  const onDisconect = () => {
+    stompClient.disconnect(() => {
+      stompClient.unsubscribe("sub-0");
+    }, {});
+  };
+
   const onConnected = () => {
     stompClient.subscribe(
       "/notification/" + Id + "/notificationPopUp",
@@ -39,31 +43,35 @@ const TimeLine = () => {
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
     toast(payloadData.content, {
-      autoClose: 2000,
+      autoClose: 1000,
       theme: "dark",
+      position: "bottom-center",
     });
   };
 
-  useEffect(() => {
-    const fetchUserApi = async () => {
-      userService
-        .getUser(Id)
-        .then((result) => {
-          setAvatar(result.imageUrl);
-          localStorage.setItem(
-            "userName",
-            result.lastName + " " + result.firstName
-          );
-          localStorage.setItem("userImgUrl", result.imageUrl);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
+  const fetchUserApi = async () => {
+    userService
+      .getUser(Id)
+      .then((result) => {
+        setAvatar(result.imageUrl);
+        localStorage.setItem(
+          "userName",
+          result.lastName + " " + result.firstName
+        );
+        localStorage.setItem("userImgUrl", result.imageUrl);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
+  useEffect(() => {
     fetchPostApi();
     fetchUserApi();
     connect();
+    return () => {
+      onDisconect();
+    };
   }, []);
 
   const fetchPostApi = async () => {

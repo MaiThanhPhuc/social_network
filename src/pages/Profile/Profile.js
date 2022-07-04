@@ -7,6 +7,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import SkeletonPost from "../../components/timeline/SkeletonPost";
 import SkeletonUser from "../../components/user/SkeletonUser";
+import {over} from "stompjs";
+import SockJS from "sockjs-client";
+import {toast} from "react-toastify";
+
+var stompClient = null;
 
 const Profile = () => {
   const [posts, setPosts] = useState([]);
@@ -18,10 +23,32 @@ const Profile = () => {
   const temp = JSON.parse(localStorage.getItem("user"));
   const Id = temp.userId;
 
-  useEffect(() => {
-    fetchPostApi();
-    fetchUserApi();
-  }, []);
+  const connect = () => {
+    let Sock = new SockJS("https://socialnetwork999.herokuapp.com/ws");
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected);
+  };
+
+  const onDisconect = () => {
+    stompClient.disconnect(() => {
+      stompClient.unsubscribe("sub-0");
+    }, {});
+  };
+
+  const onConnected = () => {
+    stompClient.subscribe(
+      "/notification/" + Id + "/notificationPopUp",
+      onMessageReceived
+    );
+  };
+  const onMessageReceived = (payload) => {
+    var payloadData = JSON.parse(payload.body);
+    toast(payloadData.content, {
+      autoClose: 1000,
+      theme: "dark",
+      position: "bottom-center",
+    });
+  };
 
   const fetchUserApi = async () => {
     userService
@@ -54,6 +81,14 @@ const Profile = () => {
     setPage(page + 1);
   };
 
+  useEffect(() => {
+    fetchPostApi();
+    fetchUserApi();
+    connect();
+    return () => {
+      onDisconect();
+    };
+  }, []);
   return (
     <>
       <div className="bg-gray">

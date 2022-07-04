@@ -38,12 +38,17 @@ const Guest = () => {
       onMessageReceived
     );
   };
+  const onDisconect = () => {
+    stompClient.disconnect(() => {
+      stompClient.unsubscribe("sub-0");
+    }, {});
+  };
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
-    console.log(payloadData);
     toast(payloadData.content, {
-      autoClose: 2000,
+      autoClose: 1000,
       theme: "dark",
+      position: "bottom-center",
     });
   };
 
@@ -55,6 +60,9 @@ const Guest = () => {
     setUser(null);
     setHasMore(true);
     connect();
+    return () => {
+      onDisconect();
+    };
   }, [guestID]);
 
   useEffect(() => {

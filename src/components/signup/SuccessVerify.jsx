@@ -9,7 +9,10 @@ const SuccessVerify = () => {
           <span className="text-black font-normal text-[15px] mt-4">
             You can now sign in with your new account{" "}
           </span>
-          <a href="" className="text-sm mt-2 hover:underline">
+          <a
+            href="https://www.qpnetwork.tk/"
+            className="text-sm mt-2 hover:underline"
+          >
             Click here to sign in !
           </a>
         </div>

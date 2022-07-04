@@ -4,6 +4,10 @@ import React, {useState, useEffect} from "react";
 import avatarDefault from "../../Resource/Image/avatar.png";
 import {useParams} from "react-router-dom";
 import Post from "../../components/post/Post";
+import {toast} from "react-toastify";
+import {over} from "stompjs";
+import SockJS from "sockjs-client";
+var stompClient = null;
 
 const PostPage = () => {
   const [avatar, setAvatar] = useState();
@@ -12,6 +16,33 @@ const PostPage = () => {
   const Id = user.userId;
   const params = useParams();
   let postIDUrl = params.postID;
+
+  const connect = () => {
+    let Sock = new SockJS("https://socialnetwork999.herokuapp.com/ws");
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected);
+  };
+
+  const onDisconect = () => {
+    stompClient.disconnect(() => {
+      stompClient.unsubscribe("sub-0");
+    }, {});
+  };
+
+  const onConnected = () => {
+    stompClient.subscribe(
+      "/notification/" + Id + "/notificationPopUp",
+      onMessageReceived
+    );
+  };
+  const onMessageReceived = (payload) => {
+    var payloadData = JSON.parse(payload.body);
+    toast(payloadData.content, {
+      autoClose: 1000,
+      theme: "dark",
+      position: "bottom-center",
+    });
+  };
 
   const fetchUserApi = async () => {
     userService
@@ -26,6 +57,10 @@ const PostPage = () => {
   useEffect(() => {
     fetchUserApi();
     fetchPostData();
+    connect();
+    return () => {
+      onDisconect();
+    };
   }, []);
 
   const fetchPostData = async () => {

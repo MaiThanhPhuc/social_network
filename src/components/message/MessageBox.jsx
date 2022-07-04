@@ -2,10 +2,10 @@ import {useState, useEffect, useRef} from "react";
 import InputMessage from "./InputMessage";
 import Heading from "./Heading";
 import BodyConversation from "./BodyConversation";
-import {over} from "stompjs";
-import SockJS from "sockjs-client";
 import {useParams} from "react-router-dom";
 import userService from "../../Services/user.service";
+import {over} from "stompjs";
+import SockJS from "sockjs-client";
 var stompClient = null;
 
 const MessageBox = () => {
@@ -72,6 +72,12 @@ const MessageBox = () => {
     );
   };
 
+  const onDisconect = () => {
+    stompClient.disconnect(() => {
+      stompClient.unsubscribe("sub-1");
+    }, {});
+  };
+
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
     console.log(payloadData);
@@ -87,9 +93,15 @@ const MessageBox = () => {
   }, [receiverID]);
 
   useEffect(() => {
-    connect();
     fetchDataConversation();
   }, [receive]);
+
+  useEffect(() => {
+    connect();
+    return () => {
+      onDisconect();
+    };
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({behavior: "smooth"});

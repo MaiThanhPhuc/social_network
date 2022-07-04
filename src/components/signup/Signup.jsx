@@ -1,13 +1,10 @@
 import {useRef} from "react";
-import {useNavigate} from "react-router-dom";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import authService from "../../Services/auth.service";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const Signup = () => {
-  let navigate = useNavigate();
-
   const toastId = useRef(null);
   const notify = () => {
     toastId.current = toast.loading("Register in progress, please wait...", {
@@ -77,7 +74,6 @@ const Signup = () => {
           values.password
         )
         .then((result) => {
-          console.log(result.data);
           if (result.data.status) {
             updateNoti();
           } else {

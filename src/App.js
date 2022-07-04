@@ -1,4 +1,3 @@
-import "./App.css";
 import MyRoutes from "./Routes/index";
 import {SkeletonTheme} from "react-loading-skeleton";
 import {ToastContainer} from "react-toastify";
@@ -12,10 +11,11 @@ function App() {
 
       <ToastContainer
         pauseOnHover={false}
+        pauseOnFocusLoss={false}
         position="bottom-center"
         newestOnTop={true}
         limit={3}
-        style={{width: "350px", fontSize: "12px"}}
+        style={{width: "300px", fontSize: "12px"}}
       />
     </>
   );
