@@ -59,7 +59,9 @@ const PostPage = () => {
     fetchPostData();
     connect();
     return () => {
-      onDisconect();
+      if (stompClient !== null) {
+        onDisconect();
+      }
     };
   }, []);
 

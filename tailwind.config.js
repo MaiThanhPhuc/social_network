@@ -35,7 +35,7 @@ module.exports = {
         messageWidth: "900px",
         messHeight: "650px",
         reportWidth: "400px",
-        shareWidth: "540px",
+        shareWidth: "570px",
         imagePostHeight: "560px",
         imagePostWidth: "470px",
         avatarPreviewWidth: "700px",

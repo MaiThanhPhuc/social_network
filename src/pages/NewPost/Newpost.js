@@ -44,7 +44,9 @@ const Newpost = () => {
     fetchUserApi();
     connect();
     return () => {
-      onDisconect();
+      if (stompClient !== null) {
+        onDisconect();
+      }
     };
   }, []);
   const fetchUserApi = async () => {

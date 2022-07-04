@@ -22,6 +22,7 @@ import ReportPost from "../components/admin/ReportPost";
 import ReportUser from "../components/admin/ReportUser";
 import EditPost from "../pages/EditPostPage/EditPost";
 import Conversation from "../pages/MessagePage/Conversation";
+import SuccessVerify from "../components/signup/SuccessVerify";
 
 const index = () => {
   return (
@@ -66,6 +67,7 @@ const index = () => {
           <Route exact path="/inbox/:receiveID" element={<Conversation />} />
         </Route>
         <Route path={"/login"} element={<Homepage />} />
+        <Route path={"/confirmemailqpnetwork"} element={<SuccessVerify />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

@@ -61,7 +61,9 @@ const Guest = () => {
     setHasMore(true);
     connect();
     return () => {
-      onDisconect();
+      if (stompClient !== null) {
+        onDisconect();
+      }
     };
   }, [guestID]);
 

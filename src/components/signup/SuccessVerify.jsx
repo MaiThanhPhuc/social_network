@@ -1,7 +1,7 @@
 const SuccessVerify = () => {
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex justify-center bg-white/70 h-screen">
         <div className="shadow-lg  mt-8 w-[350px] h-[200px] bg-white py-4 px-5 flex flex-col ">
           <span className="text-black font-semibold text-[17px]">
             Your email has been verified

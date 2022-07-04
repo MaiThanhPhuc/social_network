@@ -99,7 +99,9 @@ const MessageBox = () => {
   useEffect(() => {
     connect();
     return () => {
-      onDisconect();
+      if (stompClient !== null) {
+        onDisconect();
+      }
     };
   }, []);
 

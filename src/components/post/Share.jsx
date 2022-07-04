@@ -12,7 +12,6 @@ const Share = ({postData, stompClient, setShowShareModal}) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const Id = user.userId;
   const token = user.access_token;
-
   const toastId = useRef(null);
 
   const notify = () =>
@@ -81,7 +80,7 @@ const Share = ({postData, stompClient, setShowShareModal}) => {
             ✕
           </button>
           <h3 class="text-xl font-bold text-center pt-4 ">Share Post</h3>
-          <div className=" mt-4">
+          <div className=" mt-4 h-full">
             <div className="relative search-box flex justify-center border-y border-black/10 py-4 px-4">
               <TextareaAutosize
                 maxRows={3}
@@ -110,7 +109,7 @@ const Share = ({postData, stompClient, setShowShareModal}) => {
                 />
               ) : null}
             </div>
-            <div className=" overflow-y-auto max-h-[400px] h-[250px] py-4 px-4 text-black text-lg flex flex-col">
+            <div className=" overflow-y-auto  h-[500px] py-4 px-4 text-black text-lg flex flex-col">
               <div className="heading flex items-center">
                 <button className="avatar">
                   <div className="w-[40px] rounded-full">
@@ -132,9 +131,11 @@ const Share = ({postData, stompClient, setShowShareModal}) => {
               <div className="content ml-4 py-2">
                 <span>{postData.content}</span>
               </div>
-              <div className="body flex flex-col items-center ">
-                {postData.urlImage != null ? (
-                  <Carousel imageUrl={postData.urlImage} />
+              <div className="body flex flex-col items-center h-[550px] ">
+                {postData.images != null ? (
+                  <Carousel
+                    imageUrls={postData.images.map((imgs) => imgs.urlImage)}
+                  />
                 ) : null}
               </div>
             </div>

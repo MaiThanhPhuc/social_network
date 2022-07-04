@@ -1,8 +1,10 @@
 import {useEffect, useState, memo} from "react";
 import {Link} from "react-router-dom";
 import {AiOutlineMessage} from "react-icons/ai";
-import {BiSearch} from "react-icons/bi";
+import {BiSearch, BiLogOutCircle, BiUserCircle} from "react-icons/bi";
+import {RiUserSettingsLine} from "react-icons/ri";
 import {FiPlusSquare} from "react-icons/fi";
+import {MdOutlineAdminPanelSettings} from "react-icons/md";
 import {IoNotificationsOutline} from "react-icons/io5";
 import InfiniteScroll from "react-infinite-scroll-component";
 import logo from "../../Resource/Image/logo.png";
@@ -158,6 +160,10 @@ const Navbar = ({Avatar}) => {
               tabIndex="0"
               className="dropdown-content shadow-lg border border-black/10 bg-base-100 rounded w-[300px] p-1"
             >
+              <div className="heading text-[17px] px-3 py-2  font-medium border-b border-black/10">
+                Notification
+              </div>
+
               <InfiniteScroll
                 dataLength={notiData.length} //This is important field to render the next data
                 next={fetchData}
@@ -206,7 +212,7 @@ const Navbar = ({Avatar}) => {
                   to={`/user/${Id}`}
                   className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                 >
-                  My wall
+                  <BiUserCircle size={18} /> My wall
                 </Link>
               </li>
               <li>
@@ -214,7 +220,7 @@ const Navbar = ({Avatar}) => {
                   to="/accounts"
                   className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                 >
-                  Edit profile
+                  <RiUserSettingsLine size={18} /> Edit profile
                 </Link>
               </li>
               {user.role !== "ROLE_ADMIN" ? null : (
@@ -223,7 +229,8 @@ const Navbar = ({Avatar}) => {
                     to="/admin"
                     className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                   >
-                    Go to Admin Panel
+                    <MdOutlineAdminPanelSettings size={18} />
+                    Admin Panel
                   </Link>
                 </li>
               )}
@@ -233,7 +240,7 @@ const Navbar = ({Avatar}) => {
                   onClick={handleSignOut}
                   className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                 >
-                  Sign out
+                  <BiLogOutCircle size={18} /> Sign out
                 </button>
               </li>
             </ul>

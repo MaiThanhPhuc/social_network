@@ -70,7 +70,9 @@ const TimeLine = () => {
     fetchUserApi();
     connect();
     return () => {
-      onDisconect();
+      if (stompClient !== null) {
+        onDisconect();
+      }
     };
   }, []);
 

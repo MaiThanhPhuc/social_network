@@ -25,7 +25,6 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
   const [reload, setReload] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   const Id = user.userId;
-
   const handleLike = () => {
     if (isLike) {
       setIsLike(false);
@@ -218,17 +217,19 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
                 />
               ) : null}
             </div>
-            <div className="right ">
-              <button
-                onClick={() => setShowReport(true)}
-                className="report-post"
-              >
-                <FaRegFlag className="hover:text-black/50" />
-              </button>
-              {showReport ? (
-                <Report postID={postData.id} setShowReport={setShowReport} />
-              ) : null}
-            </div>
+            {postData.userId == Id ? null : (
+              <div className="right ">
+                <button
+                  onClick={() => setShowReport(true)}
+                  className="report-post"
+                >
+                  <FaRegFlag className="hover:text-black/50" />
+                </button>
+                {showReport ? (
+                  <Report postID={postData.id} setShowReport={setShowReport} />
+                ) : null}
+              </div>
+            )}
           </div>
 
           <div className="count-react mb-2">

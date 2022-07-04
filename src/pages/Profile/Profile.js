@@ -86,7 +86,9 @@ const Profile = () => {
     fetchUserApi();
     connect();
     return () => {
-      onDisconect();
+      if (stompClient !== null) {
+        onDisconect();
+      }
     };
   }, []);
   return (
