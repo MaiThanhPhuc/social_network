@@ -30,8 +30,6 @@ const customStyles = {
   },
 };
 
-const handleButtonClick = () => {};
-
 const PostManagement = () => {
   const [dataPost, setDataPost] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -88,6 +86,30 @@ const PostManagement = () => {
     }
   };
 
+  const handleDeletePost = (post) => {
+    console.log(post.post.id);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+    var requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://socialnetwork999.herokuapp.com/api/post/${post.post.id}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(post.post);
+        console.log(dataPost);
+        setDataPost(dataPost.filter((tmp) => tmp !== post));
+      })
+      .catch((error) => console.log("error", error));
+  };
+
   const columns = [
     {
       name: "ID",
@@ -138,13 +160,10 @@ const PostManagement = () => {
       sortable: true,
     },
     {
-      cell: () => (
+      cell: (row) => (
         <div className="dropdown dropdown-end">
           <label tabIndex="0" className="">
-            <button
-              className="hover:bg-black/20 text-black rounded-full"
-              onClick={handleButtonClick}
-            >
+            <button className="hover:bg-black/20 text-black rounded-full">
               <BiDotsVerticalRounded size={20} />
             </button>
           </label>
@@ -153,7 +172,12 @@ const PostManagement = () => {
             className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32"
           >
             <li>
-              <a className="text-red">
+              <a
+                onClick={() => {
+                  handleDeletePost(row);
+                }}
+                className="text-red"
+              >
                 <AiOutlineDelete size={18} /> Delete
               </a>
             </li>

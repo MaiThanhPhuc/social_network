@@ -188,6 +188,7 @@ const NewPostForm = ({Avatar}) => {
                     setImages={setImages}
                     files={files}
                     setFiles={setFiles}
+                    show={true}
                   />
                 )}
               </div>

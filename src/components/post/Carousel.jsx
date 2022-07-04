@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import "./styles.css";
 import {BsTrash} from "react-icons/bs";
 import {Keyboard, Pagination, Navigation} from "swiper";
-const Carousel = ({imageUrls, setImages, files, setFiles}) => {
+const Carousel = ({imageUrls, setImages, files, setFiles, show}) => {
   return (
     <>
       {imageUrls !== undefined ? (
@@ -25,18 +25,21 @@ const Carousel = ({imageUrls, setImages, files, setFiles}) => {
         >
           {imageUrls.map((img, index) => (
             <SwiperSlide key={index}>
-              <div
-                onClick={() => {
-                  setImages(imageUrls.filter((tmp) => tmp !== img));
-                  const fileArray = Array.from(files).filter(
-                    (file) => file !== files[index]
-                  );
-                  setFiles(fileArray);
-                }}
-                className=" cursor-pointer p-2 absolute top-0 right-0 bg-red rounded"
-              >
-                <BsTrash />
-              </div>
+              {show ? (
+                <div
+                  onClick={() => {
+                    setImages(imageUrls.filter((tmp) => tmp !== img));
+                    const fileArray = Array.from(files).filter(
+                      (file) => file !== files[index]
+                    );
+                    setFiles(fileArray);
+                  }}
+                  className=" cursor-pointer p-2 absolute top-0 right-0 bg-red rounded"
+                >
+                  <BsTrash />
+                </div>
+              ) : null}
+
               <img src={img} alt="anh" className="rounded" />
             </SwiperSlide>
           ))}

@@ -32,7 +32,6 @@ const EditPost = ({Avatar, dataPost}) => {
       const imagesArray = Array.from(e.target.files).map((file) =>
         URL.createObjectURL(file)
       );
-
       setImages((img) => img.concat(imagesArray));
       Array.from(e.target.files).map((img) => URL.revokeObjectURL(img));
     }
@@ -45,7 +44,7 @@ const EditPost = ({Avatar, dataPost}) => {
     }));
   const updateNoti = () =>
     toast.update(toastId.current, {
-      render: "Post Success",
+      render: "Edit post Success",
       autoClose: 4000,
       isLoading: false,
 
@@ -53,7 +52,7 @@ const EditPost = ({Avatar, dataPost}) => {
     });
   const updateFailedNoti = () =>
     toast.update(toastId.current, {
-      render: "Post failed please try again ",
+      render: "Edit post failed please try again ",
       autoClose: 3000,
       isLoading: false,
       theme: "dark",
@@ -112,7 +111,12 @@ const EditPost = ({Avatar, dataPost}) => {
     fetch("https://socialnetwork999.herokuapp.com/api/post", requestOptions)
       .then((response) => response.text())
       .then(() => {
-        Array.from(files).map((file) => addImagePost(dataPost.id, file));
+        console.log(files);
+        if (files !== undefined) {
+          Array.from(files).map((file) => addImagePost(dataPost.id, file));
+        } else {
+          updateNoti();
+        }
       })
       .catch((error) => {
         console.log("error", error);
@@ -204,6 +208,7 @@ const EditPost = ({Avatar, dataPost}) => {
                     setImages={setImages}
                     files={files}
                     setFiles={setFiles}
+                    show={false}
                   />
                 )}
               </div>

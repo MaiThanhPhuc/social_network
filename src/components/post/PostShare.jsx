@@ -11,7 +11,7 @@ const PostShare = ({postData}) => {
         <div className="heading-avatar flex items-center mt-2">
           <div className="box-left flex flex-col ml-2 ">
             <Link
-              to={`user/${postData.userCreateId}`}
+              to={`/user/${postData.userCreateId}`}
               className="user-name text-black font-semibold cursor-pointer"
             >
               {postData.firstName + " " + postData.lastName}
