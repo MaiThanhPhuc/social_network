@@ -85,7 +85,7 @@ const Guest = () => {
 
   const fetchPostApi = async () => {
     userService
-      .getPostUser(guestID, page)
+      .getPostGuest(guestID, page, Id)
       .then((res) => {
         setPosts([...posts, ...res]);
         setCountPost(res);

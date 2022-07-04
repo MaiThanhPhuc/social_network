@@ -61,6 +61,17 @@ class UserService {
 
     return response.data.data;
   }
+  async getPostGuest(userID, page, guestID) {
+    const response = await axios.get(
+      API_URL +
+        `post/user?userId=${userID}&guestId=${guestID}&page=${page}&size=10`,
+      {
+        headers: authHeader(),
+      }
+    );
+
+    return response.data.data;
+  }
 
   async getComment(postID, page) {
     const res = await axios.get(

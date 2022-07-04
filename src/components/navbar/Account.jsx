@@ -7,7 +7,7 @@ const Account = ({data}) => {
   return (
     <>
       <Link
-        to={Id != data.id ? `/user/${data.id}` : "/user"}
+        to={Id != data.id ? `/user/${data.id}` : `/user/${Id}`}
         className="template cursor-pointer "
       >
         <div className="flex w-full bg-white border-b-[1px] border-gray border-indigo-500 p-1 hover:bg-black/10">
