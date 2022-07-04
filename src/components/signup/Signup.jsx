@@ -15,7 +15,7 @@ const Signup = () => {
 
   const updateNoti = () =>
     toast.update(toastId.current, {
-      render: "Register success 🎉🎉🎉",
+      render: "Register success please check Email to verify",
       autoClose: 3000,
       isLoading: false,
       theme: "dark",
