@@ -45,7 +45,7 @@ const index = () => {
             }`}
             element={<Profile />}
           />
-          <Route path={"/user/:userID"} element={<Guest />} exact />
+          <Route path={"/user/:userID"} element={<Guest />} />
           <Route path="/newpost" element={<Newpost />} exact />
           <Route element={<AdminRoute />}>
             <Route exact path="admin" element={<AdminPage />}>
