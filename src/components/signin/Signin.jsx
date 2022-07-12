@@ -83,6 +83,17 @@ const Signin = () => {
         });
     },
   });
+  const handleDemoAcc = () => {
+    formik.values.emailSi = "thanhphuc7721@gmail.com";
+    formik.values.passwordSi = "matkhau123";
+    formik.handleSubmit();
+  };
+
+  const handleAdminAcc = () => {
+    formik.values.emailSi = "admin4@gmail.com";
+    formik.values.passwordSi = "matkhau123";
+    formik.handleSubmit();
+  };
 
   return (
     <>
@@ -94,13 +105,18 @@ const Signin = () => {
                 Welcome Back!
               </h1>
               <div className="top-gg-fb flex justify-between w-iW ">
-                <button className="text-white btn btn-primary btn-sm font-semibold px-6 text-sm normal-case">
-                  <AiOutlineGoogle className=" mr-1" /> Sign in with Google
-                </button>
-                <button className=" text-white btn btn-neutral btn-sm font-semibold px-4 text-sm normal-case">
-                  <FaFacebookF className="mr-1" />
-                  Facebook
-                </button>
+                <a
+                  onClick={handleDemoAcc}
+                  className="text-white btn btn-primary btn-sm font-semibold px-6 text-sm normal-case"
+                >
+                  Demo Account
+                </a>
+                <a
+                  onClick={handleAdminAcc}
+                  className=" text-white btn btn-primary btn-sm font-semibold px-6 text-sm normal-case"
+                >
+                  Admin Account
+                </a>
               </div>
               <div className=" flex items-center">
                 <div className=" border-grayLight w-[60px] border-b"></div>
