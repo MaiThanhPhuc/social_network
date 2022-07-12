@@ -105,7 +105,6 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
     )
       .then((response) => response.text())
       .then((result) => {
-        console.log(result);
         setPosts(posts.filter((tmp) => tmp !== postData));
       })
       .catch((error) => console.log("error", error));
@@ -130,7 +129,11 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
               </button>
               <div className="box-left flex flex-col ml-2 ">
                 <Link
-                  to={`/user/${postData.userCreate.id}`}
+                  to={
+                    `${postData.userCreate.id}` === Id
+                      ? "/user"
+                      : `user/${postData.userCreate.id}`
+                  }
                   className="user-name text-black font-semibold cursor-pointer"
                 >
                   {postData.userCreate.firstName}
@@ -140,7 +143,7 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
                 </span>
               </div>
             </div>
-            {postData.userCreate.id != Id ? null : (
+            {`${postData.userCreate.id}` !== Id ? null : (
               <div className="div">
                 <div className="dropdown dropdown-left">
                   <label tabIndex="0">
@@ -217,7 +220,7 @@ const Post = ({postData, stompClient, setPosts, posts}) => {
                 />
               ) : null}
             </div>
-            {postData.userId == Id ? null : (
+            {`${postData.userId}` === Id ? null : (
               <div className="right ">
                 <button
                   onClick={() => setShowReport(true)}

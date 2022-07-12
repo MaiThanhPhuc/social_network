@@ -5,7 +5,7 @@ import userService from "../../Services/user.service";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ProfileGuest from "../../components/guest/ProfileGuest";
 import avatarDefault from "../../Resource/Image/avatar.png";
-import {useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {toast} from "react-toastify";
 import {over} from "stompjs";
 import SockJS from "sockjs-client";
@@ -39,9 +39,11 @@ const Guest = () => {
     );
   };
   const onDisconect = () => {
-    stompClient.disconnect(() => {
-      stompClient.unsubscribe("sub-0");
-    }, {});
+    if (stompClient.counter !== 0) {
+      stompClient.disconnect(() => {
+        stompClient.unsubscribe("sub-0");
+      }, {});
+    }
   };
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
@@ -61,14 +63,16 @@ const Guest = () => {
     setHasMore(true);
     connect();
     return () => {
-      if (stompClient !== null) {
-        onDisconect();
-      }
+      onDisconect();
     };
   }, [guestID]);
 
   useEffect(() => {
+    if (guestID === Id) {
+      <Navigate to={`/user/${Id}`} replace={true} />;
+    }
     fetchPostApi();
+
     fetchUserApi();
   }, [guest]);
 

@@ -34,7 +34,6 @@ const ProfileGuest = ({stompClient, userData}) => {
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result);
-        console.log(payload);
         stompClient.send(
           `/app/sendNotification`,
           {},
@@ -171,26 +170,26 @@ const ProfileGuest = ({stompClient, userData}) => {
         </div>
       </div>
       {/* modal */}
-      <div class="modal" id="my-modal">
-        <div class="modal-box">
-          <h3 class="font-bold text-lg">
+      <div className="modal" id="my-modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">
             Does this go against our Community Standards?
           </h3>
-          <p class="py-3">
+          <p className="py-3">
             Our standards explain what we do and don't allow on here. We review
             and update our standards regularly, with the help of experts.
           </p>
-          <div class="modal-action">
+          <div className="modal-action">
             <a
               href="#"
-              class="py-2 px-3 hover:bg-grayLight border border-black/70 text-sm rounded-lg font-medium"
+              className="py-2 px-3 hover:bg-grayLight border border-black/70 text-sm rounded-lg font-medium"
             >
               Cancle
             </a>
             <a
               href="#"
               onClick={handleReportUser}
-              class=" cursor-pointer py-2 px-3 hover:bg-primaryblue/80 bg-primaryblue text-white text-sm rounded-lg font-medium"
+              className=" cursor-pointer py-2 px-3 hover:bg-primaryblue/80 bg-primaryblue text-white text-sm rounded-lg font-medium"
             >
               Report
             </a>

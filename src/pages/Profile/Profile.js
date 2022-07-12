@@ -30,9 +30,11 @@ const Profile = () => {
   };
 
   const onDisconect = () => {
-    stompClient.disconnect(() => {
-      stompClient.unsubscribe("sub-0");
-    }, {});
+    if (stompClient.counter !== 0) {
+      stompClient.disconnect(() => {
+        stompClient.unsubscribe("sub-0");
+      }, {});
+    }
   };
 
   const onConnected = () => {
@@ -86,9 +88,7 @@ const Profile = () => {
     fetchUserApi();
     connect();
     return () => {
-      if (stompClient !== null) {
-        onDisconect();
-      }
+      onDisconect();
     };
   }, []);
   return (

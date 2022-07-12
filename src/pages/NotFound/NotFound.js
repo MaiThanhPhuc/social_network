@@ -1,11 +1,10 @@
 // All copyright from https://github.com/atif0075
-import SuccessVerify from "../../components/signup/SuccessVerify";
 import {Link} from "react-router-dom";
 const NotFound = () => {
   return (
     <>
       <div className="bg-white/70 h-screen">
-        <div class="h-screen w-full flex flex-col justify-center items-center bg-[#1A2238]">
+        <div class="h-screen w-full flex flex-col justify-center items-center bg-[#526bad]">
           <h1 class="text-9xl font-extrabold text-white tracking-widest">
             404
           </h1>

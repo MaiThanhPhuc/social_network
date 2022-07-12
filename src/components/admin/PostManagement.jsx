@@ -79,7 +79,6 @@ const PostManagement = () => {
   const handlePrevPage = () => {
     if (page !== 0) {
       setPage(page - 1);
-      console.log(page);
       fetchPosts(page - 1);
     } else {
       return 0;
@@ -87,7 +86,6 @@ const PostManagement = () => {
   };
 
   const handleDeletePost = (post) => {
-    console.log(post.post.id);
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${user.access_token}`);
 
@@ -103,8 +101,6 @@ const PostManagement = () => {
     )
       .then((response) => response.text())
       .then((result) => {
-        console.log(post.post);
-        console.log(dataPost);
         setDataPost(dataPost.filter((tmp) => tmp !== post));
       })
       .catch((error) => console.log("error", error));

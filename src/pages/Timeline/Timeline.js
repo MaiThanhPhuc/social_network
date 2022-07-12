@@ -29,9 +29,11 @@ const TimeLine = () => {
   };
 
   const onDisconect = () => {
-    stompClient.disconnect(() => {
-      stompClient.unsubscribe("sub-0");
-    }, {});
+    if (stompClient.counter !== 0) {
+      stompClient.disconnect(() => {
+        stompClient.unsubscribe("sub-0");
+      }, {});
+    }
   };
 
   const onConnected = () => {
@@ -70,9 +72,7 @@ const TimeLine = () => {
     fetchUserApi();
     connect();
     return () => {
-      if (stompClient !== null) {
-        onDisconect();
-      }
+      onDisconect();
     };
   }, []);
 
@@ -88,6 +88,7 @@ const TimeLine = () => {
         console.log(err);
       });
   };
+
   const fetchData = async () => {
     fetchPostApi();
     if (countPost.length < 10) {

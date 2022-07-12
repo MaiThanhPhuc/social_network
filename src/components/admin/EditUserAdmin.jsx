@@ -98,7 +98,6 @@ const EditUserAdmin = () => {
           });
         }
         fetchUserApi();
-        console.log(res);
       })
       .catch((err) => console.log(err));
   };

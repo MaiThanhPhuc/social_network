@@ -21,7 +21,6 @@ const Navbar = ({Avatar}) => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [countNoti, setCountNoti] = useState([]);
-  const [mess, setMess] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -185,13 +184,7 @@ const Navbar = ({Avatar}) => {
             </ul>
           </div>
 
-          <Link
-            to={"/inbox"}
-            onClick={() => {
-              setMess(false);
-            }}
-            className="mb-[2px]"
-          >
+          <Link to={"/inbox"} className="mb-[2px]">
             <AiOutlineMessage size={25} />
           </Link>
 
@@ -209,7 +202,7 @@ const Navbar = ({Avatar}) => {
             >
               <li>
                 <Link
-                  to={`/user/${Id}`}
+                  to={`/user`}
                   className=" text-sm active:bg-primaryblue/50 p-2 text-black"
                 >
                   <BiUserCircle size={18} /> My wall

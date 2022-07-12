@@ -3,7 +3,8 @@ import {Link} from "react-router-dom";
 import {format} from "timeago.js";
 
 const PostShare = ({postData}) => {
-  console.log(postData);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const Id = user.userId;
   return (
     <>
       <div className="top-post w-postWidth mx-4 rounded pb-2 border border-black/20 ">
@@ -11,7 +12,11 @@ const PostShare = ({postData}) => {
         <div className="heading-avatar flex items-center mt-2">
           <div className="box-left flex flex-col ml-2 ">
             <Link
-              to={`/user/${postData.userCreateId}`}
+              to={
+                `${postData.userCreateId}` === Id
+                  ? "/user"
+                  : `user/${postData.userCreateId}`
+              }
               className="user-name text-black font-semibold cursor-pointer"
             >
               {postData.firstName + " " + postData.lastName}

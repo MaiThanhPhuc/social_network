@@ -23,7 +23,6 @@ const EditPost = () => {
         console.log(err);
       });
   };
-  console.log(dataPost);
   useEffect(() => {
     fetchUserApi();
     fetchPostData();
@@ -33,7 +32,6 @@ const EditPost = () => {
     userService
       .getPostID(Id, postID)
       .then((result) => {
-        console.log(result);
         setDataPost(result);
       })
       .catch((err) => {

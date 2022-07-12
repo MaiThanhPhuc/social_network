@@ -146,7 +146,6 @@ const ReportUser = () => {
       .then((response) => response.text())
       .then((result) => {
         setDataUser(dataUser.filter((tmp) => tmp != userData));
-        console.log(result);
       })
       .catch((error) => console.log("error", error));
   };

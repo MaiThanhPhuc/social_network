@@ -79,7 +79,6 @@ const UserManagement = () => {
   const handlePrevPage = () => {
     if (page !== 0) {
       setPage(page - 1);
-      console.log(page);
       fetchUsers(page - 1);
     } else {
       return 0;
@@ -192,7 +191,6 @@ const UserManagement = () => {
       .then((response) => response.text())
       .then((result) => {
         setDataUser(dataUser.filter((tmp) => tmp != userData));
-        console.log(result);
       })
       .catch((error) => console.log("error", error));
   };

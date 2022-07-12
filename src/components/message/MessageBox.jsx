@@ -73,14 +73,15 @@ const MessageBox = () => {
   };
 
   const onDisconect = () => {
-    stompClient.disconnect(() => {
-      stompClient.unsubscribe("sub-1");
-    }, {});
+    if (stompClient.counter !== 0) {
+      stompClient.disconnect(() => {
+        stompClient.unsubscribe("sub-1");
+      }, {});
+    }
   };
 
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
-    console.log(payloadData);
     setMessageReceive(payloadData);
   };
 
@@ -99,9 +100,7 @@ const MessageBox = () => {
   useEffect(() => {
     connect();
     return () => {
-      if (stompClient !== null) {
-        onDisconect();
-      }
+      onDisconect();
     };
   }, []);
 
@@ -112,7 +111,7 @@ const MessageBox = () => {
 
   useEffect(() => {
     const ReceiveMessage = () => {
-      if (messageReceive.senderId == receiverID) {
+      if (`${messageReceive.senderId}` === receiverID) {
         setMessages([...messages, {...messageReceive}]);
         setScroll(true);
       }

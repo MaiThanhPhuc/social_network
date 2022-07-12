@@ -52,7 +52,6 @@ const Dashboard = () => {
       .then((response) => response.text())
       .then((result) => {
         const payload = JSON.parse(result);
-        console.log(payload);
         setposts(payload.length);
       })
       .catch((error) => console.log("error", error));

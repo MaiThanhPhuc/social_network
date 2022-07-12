@@ -151,7 +151,6 @@ const ReportPost = () => {
       .then((response) => response.text())
       .then((result) => {
         setDataPost(dataPost.filter((tmp) => tmp != post));
-        console.log(result);
       })
       .catch((error) => console.log("error", error));
   };

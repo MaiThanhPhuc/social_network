@@ -22,7 +22,6 @@ const Conversation = () => {
     userService
       .getFollowing(user.userId)
       .then((res) => {
-        console.log(res.data.data);
         setUsers(res.data.data);
       })
       .catch((err) => console.log(err));

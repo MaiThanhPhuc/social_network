@@ -8,8 +8,8 @@ import Profile from "../pages/Profile/Profile";
 import TimeLine from "../pages/Timeline/Timeline";
 import MessagePage from "../pages/MessagePage/MessagePage";
 import NotFound from "../pages/NotFound/NotFound";
-import Edit_Profile from "../components/user/Edit_Profile";
-import Change_Password from "../components/user/Change_Password";
+import EditProfileComponent from "../components/user/Edit_Profile";
+import ChangePassword from "../components/user/Change_Password";
 import FollowerUser from "../components/user/FollowerUser";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import Dashboard from "../components/admin/Dashboard";
@@ -37,14 +37,7 @@ const index = () => {
             element={<EditPost />}
             exact
           />
-          <Route
-            path={`/user/${
-              localStorage.getItem("user") !== null
-                ? JSON.parse(localStorage.getItem("user")).userId
-                : null
-            }`}
-            element={<Profile />}
-          />
+          <Route path={`/user`} element={<Profile />} exact />
           <Route path={"/user/:userID"} element={<Guest />} />
           <Route path="/newpost" element={<Newpost />} exact />
           <Route element={<AdminRoute />}>
@@ -59,8 +52,8 @@ const index = () => {
           </Route>
 
           <Route exact path="accounts" element={<EditProfile />}>
-            <Route index element={<Edit_Profile />} />
-            <Route path="changepassword" element={<Change_Password />} />
+            <Route index element={<EditProfileComponent />} />
+            <Route path="changepassword" element={<ChangePassword />} />
             <Route path="follower" element={<FollowerUser />} />
           </Route>
           <Route exact path="/guest" element={<Guest />} />

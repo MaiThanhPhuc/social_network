@@ -87,7 +87,6 @@ const Edit_Profile = () => {
             setLoad(true);
             localStorage.setItem("userName", values.lname + " " + values.fname);
           }
-          console.log(res);
         })
         .catch((err) => console.log(err));
     },

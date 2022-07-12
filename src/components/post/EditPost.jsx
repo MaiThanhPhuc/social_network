@@ -75,7 +75,6 @@ const EditPost = ({Avatar, dataPost}) => {
       requestOptions
     )
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
           updateNoti();
           setContent("");
@@ -111,7 +110,6 @@ const EditPost = ({Avatar, dataPost}) => {
     fetch("https://socialnetwork999.herokuapp.com/api/post", requestOptions)
       .then((response) => response.text())
       .then(() => {
-        console.log(files);
         if (files !== undefined) {
           Array.from(files).map((file) => addImagePost(dataPost.id, file));
         } else {

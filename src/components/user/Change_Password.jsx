@@ -50,7 +50,6 @@ const Change_Password = () => {
       )
         .then((response) => response.text())
         .then((result) => {
-          console.log(result);
           toast("Password Changed Successfully 🔑🔑!", {
             position: "bottom-center",
             autoClose: 3000,

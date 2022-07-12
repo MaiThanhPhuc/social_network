@@ -24,9 +24,11 @@ const PostPage = () => {
   };
 
   const onDisconect = () => {
-    stompClient.disconnect(() => {
-      stompClient.unsubscribe("sub-0");
-    }, {});
+    if (stompClient.counter !== 0) {
+      stompClient.disconnect(() => {
+        stompClient.unsubscribe("sub-0");
+      }, {});
+    }
   };
 
   const onConnected = () => {
@@ -59,9 +61,7 @@ const PostPage = () => {
     fetchPostData();
     connect();
     return () => {
-      if (stompClient !== null) {
-        onDisconect();
-      }
+      onDisconect();
     };
   }, []);
 
@@ -69,7 +69,6 @@ const PostPage = () => {
     userService
       .getPostID(Id, postIDUrl)
       .then((result) => {
-        console.log(result);
         setDataPost(result);
       })
       .catch((err) => {

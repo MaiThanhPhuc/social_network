@@ -4,31 +4,31 @@ import {useEffect} from "react";
 import {useState} from "react";
 
 const Topten = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
   const [topten, setTopTen] = useState([]);
-  const fetchDataTopTen = () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${user.access_token}`);
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    fetch(
-      "https://socialnetwork999.herokuapp.com/api/user/topFollower",
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => {
-        const payload = JSON.parse(result).data;
-        setTopTen(payload);
-      })
-      .catch((error) => console.log("error", error));
-  };
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
+    const fetchDataTopTen = () => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${user.access_token}`);
+
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      fetch(
+        "https://socialnetwork999.herokuapp.com/api/user/topFollower",
+        requestOptions
+      )
+        .then((response) => response.text())
+        .then((result) => {
+          const payload = JSON.parse(result).data;
+          setTopTen(payload);
+        })
+        .catch((error) => console.log("error", error));
+    };
     fetchDataTopTen();
   }, []);
 
@@ -60,7 +60,7 @@ const Topten = () => {
               </div>
             </div>
             <Link
-              to={`/user/${data.id}`}
+              to={`${data.id}` === user.userId ? "/user" : `/user/${data.id}`}
               className="text-sm font-medium hover:underline text-primaryblue"
             >
               Go to profile
