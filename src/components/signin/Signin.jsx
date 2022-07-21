@@ -86,11 +86,13 @@ const Signin = () => {
   const handleDemoAcc = () => {
     formik.values.emailSi = "thanhphuc7721@gmail.com";
     formik.values.passwordSi = "matkhau123";
+    formik.handleSubmit();
   };
 
   const handleAdminAcc = () => {
     formik.values.emailSi = "admin4@gmail.com";
     formik.values.passwordSi = "matkhau123";
+    formik.handleSubmit();
   };
 
   return (
